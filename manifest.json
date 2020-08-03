@@ -1,8 +1,12 @@
 {
   "manifest_version": 2,
-  "name": "My chrome extension",
+  "name": "MPM Password Manager",
   "version": "1.0.0",
   "permissions": ["tabs", "activeTab", "storage"],
+  "browser_action": {
+    "default_popup": "popup/index.html",
+    "default_title": "React Chrome Extension Starter"
+  },
   "content_scripts": [
     {
       "js": ["contentscript.js"],

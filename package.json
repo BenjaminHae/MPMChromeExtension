@@ -6,11 +6,14 @@
   "scripts": {
     "build:contentscript-background": "NODE_ENV=production webpack --config webpack.config.js",
     "build": "npm run build:contentscript-background",
+    "build:popup": "INLINE_RUNTIME_CHUNK=false npm run build --prefix src/popup && cd src/popup/build && cpy * /static/* ../../../dist/popup --parents",
     "clean": "rm -rf dist && cpy manifest.json dist && cpy src/assets/* dist/assets",
     "prebuild": "npm run clean",
     "prewatch": "npm run clean",
     "watch:contentscript-background": "NODE_ENV=development webpack --config webpack.config.js -w",
-    "watch": "npm-run-all -parallel watch:*"
+    "watch:popup": "npm run watch:build --prefix src/popup",
+    "watch": "npm-run-all watch:*",
+    "zip": "bestzip extension.zip dist/*"
   },
   "keywords": [],
   "author": "Benjamin Häublein",
@@ -19,7 +22,9 @@
     "@types/chrome": "0.0.122",
     "@types/node": "^14.0.27",
     "awesome-typescript-loader": "^5.2.1",
+    "bestzip": "^2.1.6",
     "cpy-cli": "^3.1.1",
+    "cra-build-watch": "^3.2.0",
     "css-loader": "^4.2.0",
     "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.14.1",
