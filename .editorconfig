@@ -1,0 +1,9 @@
+# EditorConfig is awesome: http://EditorConfig.org
+
+[*]
+insert_final_newline = true
+charset = utf-8
+indent_style = space
+
+[*.tsx, *.json]
+indent_size = 2
