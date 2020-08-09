@@ -7,13 +7,20 @@ import SparseAccount from '../../models/SparseAccount';
 interface AuthenticatedProps {
   username: string;
   accounts: Array<SparseAccount>;
+  logoutHandler: () => void;
+  showManagerHandler: () => void;
+  addAccountHandler: (url: string) => void;// not sure if url is necessary
   selectHandler: (id: number) => void;
   editHandler: (id: number) => void;
   copyPasswordHandler: (id: number) => void;
 }
 const Authenticated: React.FC<AuthenticatedProps> = (props: AuthenticatedProps) => (
   <div>
-    <ActionButtons />
+    <ActionButtons
+        logoutHandler={props.logoutHandler}
+        showManagerHandler={props.showManagerHandler}
+        addAccountHandler={props.addAccountHandler}
+    />
     <Info 
       username={props.username}
     />
