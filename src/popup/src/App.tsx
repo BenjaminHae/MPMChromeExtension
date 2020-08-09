@@ -29,6 +29,7 @@ export default class App extends React.Component<{}, AppState> {
           accounts={this.state.accounts}
           logoutHandler={()=>{}}
           showManagerHandler={()=>{}}
+          showOptionsHandler={()=>{}}
           addAccountHandler={(url: string)=>{}}
           selectHandler={(id)=>{}}
           editHandler={(id)=>{}}

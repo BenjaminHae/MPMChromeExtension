@@ -3,6 +3,7 @@ import React from 'react';
 interface ActionButtonsProps {
   logoutHandler: () => void;
   showManagerHandler: () => void;
+  showOptionsHandler: () => void;
   addAccountHandler: (url: string) => void;// not sure if url is necessary
 }
 

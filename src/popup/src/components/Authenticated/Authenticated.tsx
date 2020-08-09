@@ -9,6 +9,7 @@ interface AuthenticatedProps {
   accounts: Array<SparseAccount>;
   logoutHandler: () => void;
   showManagerHandler: () => void;
+  showOptionsHandler: () => void;
   addAccountHandler: (url: string) => void;// not sure if url is necessary
   selectHandler: (id: number) => void;
   editHandler: (id: number) => void;
@@ -19,6 +20,7 @@ const Authenticated: React.FC<AuthenticatedProps> = (props: AuthenticatedProps) 
     <ActionButtons
         logoutHandler={props.logoutHandler}
         showManagerHandler={props.showManagerHandler}
+        showOptionsHandler={props.showOptionsHandler}
         addAccountHandler={props.addAccountHandler}
     />
     <Info 
