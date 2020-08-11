@@ -1,5 +1,5 @@
 import React from 'react';
-import SparseAccount from '../../models/SparseAccount';
+import SparseAccount from '../../../../models/SparseAccount';
 
 interface AccountProps {
   account: SparseAccount;

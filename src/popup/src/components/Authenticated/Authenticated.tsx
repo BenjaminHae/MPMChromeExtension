@@ -2,7 +2,7 @@ import React from 'react';
 import AccountList from '../AccountList/AccountList';
 import ActionButtons from '../ActionButtons/ActionButtons';
 import Info from '../Info/Info';
-import SparseAccount from '../../models/SparseAccount';
+import SparseAccount from '../../../../models/SparseAccount';
 
 interface AuthenticatedProps {
   username: string;

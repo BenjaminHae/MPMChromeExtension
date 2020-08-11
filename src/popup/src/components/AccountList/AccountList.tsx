@@ -1,6 +1,6 @@
 import React from 'react';
 import Account from '../Account/Account';
-import SparseAccount from '../../models/SparseAccount';
+import SparseAccount from '../../../../models/SparseAccount';
 
 interface AccountListProps {
   accounts: Array<SparseAccount>;
@@ -16,7 +16,7 @@ const AccountList: React.FC<AccountListProps> = (props: AccountListProps) => {
         selectHandler={props.selectHandler}
         editHandler={props.editHandler}
         copyPasswordHandler={props.copyPasswordHandler}
-        key={account.id} 
+        key={account.index} 
       /> 
     ) 
   );

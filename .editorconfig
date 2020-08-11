@@ -5,5 +5,5 @@ insert_final_newline = true
 charset = utf-8
 indent_style = space
 
-[*.tsx, *.json]
+[*.ts, *.tsx, *.json]
 indent_size = 2
