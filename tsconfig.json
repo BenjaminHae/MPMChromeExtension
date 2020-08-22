@@ -2,12 +2,18 @@
   "compileOnSave": false,
   "compilerOptions": {
     "target": "es6",
-    "module": "commonjs",
+    "module": "esnext",
     "sourceMap": false,
     "types": ["@types/chrome", "node"],
     "typeRoots": ["node_modules/@types"],
     "moduleResolution": "node",
-    "lib": ["es2017", "dom"]
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ]
   },
   "include": ["src/background", "src/contentscript"]
 }

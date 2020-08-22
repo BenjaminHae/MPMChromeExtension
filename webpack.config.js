@@ -2,6 +2,8 @@ const { CheckerPlugin } = require('awesome-typescript-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { optimize } = require('webpack');
 const { join } = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 let prodPlugins = [];
 if (process.env.NODE_ENV === 'production') {
   prodPlugins.push(
@@ -9,7 +11,8 @@ if (process.env.NODE_ENV === 'production') {
     new optimize.OccurrenceOrderPlugin()
   );
 }
-module.exports = {
+module.exports = [{
+  name: "scripts",
   mode: process.env.NODE_ENV,
   devtool: 'inline-source-map',
   entry: {
@@ -44,4 +47,41 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'],
   },
-};
+},
+{
+  name: "options",
+  mode: process.env.NODE_ENV,
+  devtool: 'inline-source-map',
+  entry: {
+    popup: join(__dirname, 'src/options/index.ts'),
+  },
+  output: {
+    path: join(__dirname, 'dist/options'),
+    filename: '[name].js',
+  },
+  module: {
+    rules: [
+      {
+        exclude: /node_modules/,
+        test: /\.ts?$/,
+        use: 'awesome-typescript-loader?{configFileName: "tsconfig.json"}',
+      },
+      {
+        test: /\.scss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+      },
+    ],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({title: "Options"}),
+    new CheckerPlugin(),
+    ...prodPlugins,
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+    }),
+  ],
+  resolve: {
+    extensions: ['.ts', '.js'],
+  },
+}];
