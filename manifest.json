@@ -26,9 +26,11 @@
     "storage"
   ],
   "options_ui": {
-    "page": "options.html", 
+    "page": "options/index.html", 
     "chrome_style": true
   },
-  "web_accessible_resources": ["assets/*"],
+  "web_accessible_resources": [
+    "webaccessible/*",
+    "assets/*"],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

@@ -61,7 +61,9 @@ class BackendGateway {
   
   async setUserSession(username: string, key: any): Promise<void> {
     let credentials = new KeyCredentialProvider(key);
+    await this.backend.waitForBackend();
     await this.backend.logonWithCredentials(credentials, username);
+    console.log('login successful');
     return
   }
 }

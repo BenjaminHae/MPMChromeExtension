@@ -1,6 +1,9 @@
 import SparseAccount from '../models/SparseAccount';
 import PopupConnector from './PopupConnector';
 import TabConnector from './TabConnector';
+import IFrameConnector from './IFrameConnector';
+import BackendGateway from './BackendGateway';
+import Settings from '../shared/Settings';
 //todo
 // context
 //   contextEntries
@@ -28,6 +31,8 @@ import TabConnector from './TabConnector';
 //   getData from accounts
 
 class DummyMethods {
+  constructor (private backend: BackendGateway) {
+  }
   getBackendHost(): string {
     return "https://testhost.test"
   }
@@ -58,7 +63,9 @@ class DummyMethods {
   }
   setAction(action: string, data: object): void {
   }
-  setUserSession(data:any): void {
+  async setUserSession(username: string, key: any): Promise<void> {
+    await this.backend.setUserSession(username, key);
+    return
   }
   logout(): void {
   }
@@ -66,9 +73,20 @@ class DummyMethods {
   }
 }
 
-let popup = new PopupConnector(new DummyMethods());
-let tab = new TabConnector(new DummyMethods());
+let backend: BackendGateway;
+let popup: PopupConnector;
+let tab: TabConnector;
+let iframe: IFrameConnector;
 
+let settings = new Settings();
+settings.load()
+  .then(() => {
+      backend = new BackendGateway(settings.host);
+      popup = new PopupConnector(new DummyMethods(backend));
+      tab = new TabConnector(new DummyMethods(backend));
+      iframe = new IFrameConnector(backend);
+    });
   /*function convertBackendAccountToSparseAccount(account: any): SparseAccount {
+
 
   }*/

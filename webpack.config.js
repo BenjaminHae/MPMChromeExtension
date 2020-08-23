@@ -53,7 +53,7 @@ module.exports = [{
   mode: process.env.NODE_ENV,
   devtool: 'inline-source-map',
   entry: {
-    popup: join(__dirname, 'src/options/index.ts'),
+    options: join(__dirname, 'src/options/index.ts'),
   },
   output: {
     path: join(__dirname, 'dist/options'),
@@ -84,4 +84,42 @@ module.exports = [{
   resolve: {
     extensions: ['.ts', '.js'],
   },
-}];
+},
+{
+  name: "webaccessible",
+  mode: process.env.NODE_ENV,
+  devtool: 'inline-source-map',
+  entry: {
+    webaccessible: join(__dirname, 'src/webaccessible/index.ts'),
+  },
+  output: {
+    path: join(__dirname, 'dist/webaccessible'),
+    filename: '[name].js',
+  },
+  module: {
+    rules: [
+      {
+        exclude: /node_modules/,
+        test: /\.ts?$/,
+        use: 'awesome-typescript-loader?{configFileName: "tsconfig.json"}',
+      },
+      {
+        test: /\.scss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+      },
+    ],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({title: "Webaccessible"}),
+    new CheckerPlugin(),
+    ...prodPlugins,
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+    }),
+  ],
+  resolve: {
+    extensions: ['.ts', '.js'],
+  },
+},
+];
