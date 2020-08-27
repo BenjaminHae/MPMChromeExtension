@@ -12,6 +12,7 @@ import { Configuration as OpenAPIConfiguration } from '@pm-server/pm-server-reac
 import { MaintenanceApi as OpenAPIMaintenanceService } from '@pm-server/pm-server-react-client';
 import { UserApi as OpenAPIUserService } from '@pm-server/pm-server-react-client';
 import { AccountsApi as OpenAPIAccountsService } from '@pm-server/pm-server-react-client';
+import SparseAccount from '../models/SparseAccount';
 
 class KeyCredentialProvider {
   key: CryptoKey;
@@ -34,8 +35,7 @@ class BackendGateway {
   private backend: BackendService;
 
   constructor (host: string) {
-    this.authenticated = false;
-    this.accountsReady = false;
+    this.cleanup();
     const csrfMiddleware = new CSRFMiddleware();
     const APIconfiguration = new OpenAPIConfiguration({ basePath: host, middleware: [csrfMiddleware]});
     const noCredential = new CredentialService();
@@ -58,6 +58,11 @@ class BackendGateway {
           this.accountsReady = true;
           });
   }
+
+  cleanup() {
+    this.authenticated = false;
+    this.accountsReady = false;
+  }
   
   async setUserSession(username: string, key: any): Promise<void> {
     let credentials = new KeyCredentialProvider(key);
@@ -65,6 +70,29 @@ class BackendGateway {
     await this.backend.logonWithCredentials(credentials, username);
     console.log('login successful');
     return
+  }
+
+  getAccountsForDomain(url: string): Array<SparseAccount> {
+    if (!this.accountsReady) {
+      return []
+    }
+    return this.backend.accounts.filter(
+        (account) =>
+        account.other["url"].startsWith(url)
+      )
+      .map(
+        (account) =>
+        this.accountToSparseAccount(account)
+      );
+  }
+
+  getActiveAccountIndex(): number {
+    // todo
+    return -1;
+  }
+
+  accountToSparseAccount(account: Account): SparseAccount {
+    return { name: account.name, index: account.index, active: this.getActiveAccountIndex() === account.index, username: account.other["username"]}
   }
 }
 
