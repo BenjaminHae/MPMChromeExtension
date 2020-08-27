@@ -19,7 +19,7 @@ class Settings {
 
   async load(): Promise<void> {
     let items = await this.fetchSettings();
-    this.host = items.host;
+    this.host = items.url;
   }
 }
 export default Settings;
