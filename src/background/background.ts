@@ -43,7 +43,7 @@ class DummyMethods {
     return "testuser";
   }
   getAccountsForDomain(url: string): Array<SparseAccount> {
-    return [{name:"Testaccount", index:8, active:true,username:"bla"}]
+    return this.backend.getAccountsForDomain(url);
   }
   getAccountByIndex(index: number): SparseAccount {
     return {name:"Testaccount", index:index, active:true,username:"bla"}
