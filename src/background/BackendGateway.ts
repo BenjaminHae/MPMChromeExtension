@@ -72,28 +72,18 @@ class BackendGateway {
     return
   }
 
-  getAccountsForDomain(url: string): Array<SparseAccount> {
-    if (!this.accountsReady) {
-      return []
+  async getPassword(accountId: number): Promise<string> {
+    const account = this.backend.accounts.find((account) => account.index === accountId);
+    if (!account) {
+      throw new Error("Account not found");
     }
-    return this.backend.accounts.filter(
-        (account) =>
-        account.other["url"].startsWith(url)
-      )
-      .map(
-        (account) =>
-        this.accountToSparseAccount(account)
-      );
+    return await this.backend.getPassword(account);
   }
 
-  getActiveAccountIndex(): number {
-    // todo
-    return -1;
-  }
-
-  accountToSparseAccount(account: Account): SparseAccount {
-    return { name: account.name, index: account.index, active: this.getActiveAccountIndex() === account.index, username: account.other["username"]}
+  getAccounts(): Array<Account> {
+    return this.backend.accounts;
   }
 }
 
 export default BackendGateway;
+

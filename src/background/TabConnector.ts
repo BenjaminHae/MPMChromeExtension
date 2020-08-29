@@ -62,11 +62,38 @@ class TabConnector {
   }
   insertTextIntoSelectedInput(text: string, frameId: number = 0) {
     this.executeScript(function (text) {
-        var input = document.activeElement as HTMLInputElement;
+        const input = document.activeElement as HTMLInputElement;
         input.value = text;
         input.dispatchEvent(new Event('change'));
         }, text, frameId);
   }
+  async insertTextIntoAdjacentPassword(text: string, frameId: number = 0) {
+    this.executeScript(function (text) {
+        const selected = document.activeElement as HTMLInputElement;
+        const form = selected.closest("form");
+        const input = form.querySelectorAll("input[type=password]")[0] as HTMLInputElement;
+        input.value = text;
+        input.dispatchEvent(new Event('change'));
+        }, text, frameId);
+    return new Promise(resolve => setTimeout(resolve, 250));
+  }
+  async submitClosestForm(frameId: number = 0) {
+    this.executeScript(function (text) {
+        const selected = document.activeElement as HTMLInputElement;
+        const form = selected.closest("form");
+        const buttons = form.querySelectorAll("input[type=submit]");
+        if (buttons.length > 0) {
+          (buttons[0] as HTMLButtonElement).click();
+        }
+        else {
+          //Hack to prevent issues with forms containing <input name="submit"
+          //See https://stackoverflow.com/a/41846503/3592375
+          const submitFormFunction = Object.getPrototypeOf(form).submit;
+          submitFormFunction.call(form);
+        }
+      }, null, frameId);
+  }
+ 
   executeScript(script, args, frameId: number = 0) {
     let payload = '(' + script + ')('+JSON.stringify(args)+');';
     chrome.tabs.executeScript({"code" : payload, "frameId" : frameId});

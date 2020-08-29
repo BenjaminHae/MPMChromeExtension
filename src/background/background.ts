@@ -3,6 +3,8 @@ import PopupConnector from './PopupConnector';
 import TabConnector from './TabConnector';
 import IFrameConnector from './IFrameConnector';
 import BackendGateway from './BackendGateway';
+import AccountManager from './AccountManager';
+import ContextMenu from './ContextMenu';
 import Settings from '../shared/Settings';
 //todo
 // context
@@ -31,7 +33,7 @@ import Settings from '../shared/Settings';
 //   getData from accounts
 
 class DummyMethods {
-  constructor (private backend: BackendGateway) {
+  constructor (private backend: BackendGateway, private accounts: AccountManager) {
   }
   getBackendHost(): string {
     return "https://testhost.test"
@@ -43,7 +45,7 @@ class DummyMethods {
     return "testuser";
   }
   getAccountsForDomain(url: string): Array<SparseAccount> {
-    return this.backend.getAccountsForDomain(url);
+    return this.accounts.getAccountsForURL(url);
   }
   getAccountByIndex(index: number): SparseAccount {
     return {name:"Testaccount", index:index, active:true,username:"bla"}
@@ -77,14 +79,18 @@ let backend: BackendGateway;
 let popup: PopupConnector;
 let tab: TabConnector;
 let iframe: IFrameConnector;
+let contextMenu: ContextMenu;
+let accountManager: AccountManager;
 
 let settings = new Settings();
 settings.load()
   .then(() => {
       backend = new BackendGateway(settings.host);
-      popup = new PopupConnector(new DummyMethods(backend));
-      tab = new TabConnector(new DummyMethods(backend));
+      accountManager = new AccountManager(backend);
+      popup = new PopupConnector(new DummyMethods(backend, accountManager));
+      tab = new TabConnector(new DummyMethods(backend, accountManager));
       iframe = new IFrameConnector(backend);
+      contextMenu = new ContextMenu(tab, accountManager);
     });
   /*function convertBackendAccountToSparseAccount(account: any): SparseAccount {
 
