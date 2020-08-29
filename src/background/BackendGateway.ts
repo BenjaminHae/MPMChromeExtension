@@ -72,12 +72,16 @@ class BackendGateway {
     return
   }
 
-  async getPassword(accountId: number): Promise<string> {
+  getAccountByIndex(accountId: number): Account {
     const account = this.backend.accounts.find((account) => account.index === accountId);
     if (!account) {
       throw new Error("Account not found");
     }
-    return await this.backend.getPassword(account);
+    return account;
+  }
+
+  async getPassword(accountId: number): Promise<string> {
+    return await this.backend.getPassword(this.getAccountByIndex(accountId));
   }
 
   getAccounts(): Array<Account> {
