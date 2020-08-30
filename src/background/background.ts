@@ -75,23 +75,18 @@ class DummyMethods {
   }
 }
 
-let backend: BackendGateway;
-let popup: PopupConnector;
-let tab: TabConnector;
-let iframe: IFrameConnector;
-let contextMenu: ContextMenu;
-let accountManager: AccountManager;
-
+let backend = new BackendGateway("");
+let accountManager = new AccountManager(backend);
+let popup = new PopupConnector(new DummyMethods(backend, accountManager));
+let tab = new TabConnector(new DummyMethods(backend, accountManager));
+let iframe = new IFrameConnector(backend);
+let contextMenu = new ContextMenu(tab, accountManager);
 let settings = new Settings();
-settings.load()
-  .then(() => {
-      backend = new BackendGateway(settings.host);
-      accountManager = new AccountManager(backend);
-      popup = new PopupConnector(new DummyMethods(backend, accountManager));
-      tab = new TabConnector(new DummyMethods(backend, accountManager));
-      iframe = new IFrameConnector(backend);
-      contextMenu = new ContextMenu(tab, accountManager);
+settings.settingsObservable
+  .subscribe((settings) => {
+      backend.setHost(settings.host);
     });
+settings.load();
   /*function convertBackendAccountToSparseAccount(account: any): SparseAccount {
 
 

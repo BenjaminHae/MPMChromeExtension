@@ -34,10 +34,14 @@ class BackendGateway {
   accountsReady: boolean;
   private backend: BackendService;
 
-  constructor (host: string) {
+  constructor (private host: string) {
     this.cleanup();
+    this.initBackend();
+  }
+
+  initBackend() {
     const csrfMiddleware = new CSRFMiddleware();
-    const APIconfiguration = new OpenAPIConfiguration({ basePath: host, middleware: [csrfMiddleware]});
+    const APIconfiguration = new OpenAPIConfiguration({ basePath: this.host, middleware: [csrfMiddleware]});
     const noCredential = new CredentialService();
     const crypto = new CryptoService(noCredential);
     const accountTransformerService = new AccountTransformerService(crypto); 
@@ -57,6 +61,11 @@ class BackendGateway {
       .subscribe((accounts: Array<Account>) => {
           this.accountsReady = true;
           });
+  }
+
+  setHost(host: string) {
+    this.host = host;
+    this.initBackend();
   }
 
   cleanup() {
