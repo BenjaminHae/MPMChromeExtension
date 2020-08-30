@@ -49,26 +49,27 @@ class ContextMenu {
   }
 
   setupContextMenu() {
-    const menu = chrome.contextMenus.create( { "title": "Password-Manager", "contexts":["editable"], id: "pwmanroot" });
     const menuEntries = {
         "user": { title: "Insert Username", onclick: (info, tab) => this.insert("username", tab.url, info["frameId"]) },
         "password": { title: "Insert Password", onclick: (info, tab) => this.insert("password", tab.url, info["frameId"]) },
         "signin": { title: "Sign In", onclick: (info, tab) => this.insertCredentialsAndSignin(tab.url, info["frameId"]) }
       };
-     
-    for (let item in menuEntries) {
-      this.contextEntries[item] = chrome.contextMenus.create(
-        {
-          "title": menuEntries[item].title,
-          "parentId": menu,
-          "contexts":["editable"], 
-          id: item
-        }
-      );
-    }
-    chrome.contextMenus.onClicked.addListener((info, tab) => {
-        menuEntries[info.menuItemId].onclick(info, tab); 
-    }); 
+    chrome.contextMenus.removeAll(() => {
+      const menu = chrome.contextMenus.create( { "title": "Password-Manager", "contexts":["editable"], id: "pwmanroot" });
+      for (let item in menuEntries) {
+        this.contextEntries[item] = chrome.contextMenus.create(
+          {
+            "title": menuEntries[item].title,
+            "parentId": menu,
+            "contexts":["editable"], 
+            id: item
+          }
+        );
+      }
+      chrome.contextMenus.onClicked.addListener((info, tab) => {
+          menuEntries[info.menuItemId].onclick(info, tab); 
+      }); 
+    });
   }
 }
 
