@@ -1,19 +1,13 @@
-function storage() {
-  if ("sync" in chrome.storage)
-    return chrome.storage.sync;
-  return chrome.storage.local;
+import Settings from '../shared/Settings';
+
+function loadData(items) {
+  console.log(items);
+  (document.getElementById('url') as HTMLInputElement).value = items.host;
 }
-function loadData() {
-  storage().get({url: ""}, function(items) {
-    (document.getElementById('url') as HTMLInputElement).value = items.url;
-    console.log(items);
-  });
-}
-function storeData() {
-  let url = (document.getElementById('url') as HTMLInputElement).value;
-  storage().set({url: url}, function() {
-    document.getElementById('status').textContent = 'Options saved.';
-  });
+async function storeData() {
+  settings.settings.host = (document.getElementById('url') as HTMLInputElement).value; 
+  await settings.store();
+  document.getElementById('status').textContent = 'Options saved.';
 }
 function createHTML() {
   let label = document.createElement('label');
@@ -34,5 +28,12 @@ function createHTML() {
   status.setAttribute('id','status'); 
   document.body.appendChild(status);
 }
+
+let settings = new Settings();
+settings.settingsObservable
+  .subscribe((settings) => {
+      loadData(settings);
+    });
 createHTML();
-loadData();
+settings.load();
+

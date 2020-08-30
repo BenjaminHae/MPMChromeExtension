@@ -22,13 +22,15 @@ class Settings {
   private settingsObservers: Array<Subscriber<IExtensionSettings>> = [];
   settingsObservable = new Observable<IExtensionSettings>(subscriptionCreator(this.settingsObservers));
 
-  private async fetchSettings(): Promise<any> {
+  private getStorage(): any {
+    if ("sync" in chrome.storage)
+      return chrome.storage.sync;
+    return chrome.storage.local;
+  }
+  private async fetchSettings(): Promise<IExtensionSettings> {
     return new Promise((resolve, reject) => {
-      var storage = chrome.storage.local;
-      if ("sync" in chrome.storage)
-        storage = chrome.storage.sync;
-      storage.get(this.defaultSettings(), function(items) {
-        resolve(items);
+      this.getStorage().get(this.defaultSettings(), function(items) {
+        resolve(items as IExtensionSettings);
       });
     });
   }
@@ -39,7 +41,20 @@ class Settings {
 
   async load(): Promise<void> {
     let items = await this.fetchSettings();
-    this.settings = items as IExtensionSettings;
+    this.settings = items;
+    subscriptionExecutor<IExtensionSettings>(this.settingsObservers, this.settings);
+  }
+
+  async storeSettings(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.getStorage().set(this.settings, function() {
+        resolve();
+      });
+    });
+  }
+  
+  async store(): Promise<void> {
+    await this.storeSettings();
     subscriptionExecutor<IExtensionSettings>(this.settingsObservers, this.settings);
   }
 }
