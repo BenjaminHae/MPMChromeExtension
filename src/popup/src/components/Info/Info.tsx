@@ -6,7 +6,7 @@ interface InfoProps {
 
 const Info: React.FC<InfoProps> = (props:InfoProps) => (
   <div>
-    Info Component {props.username}
+    Logged in as {props.username}
   </div>
 );
 

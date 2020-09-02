@@ -1,6 +1,7 @@
 import React from 'react';
 import Account from '../Account/Account';
 import SparseAccount from '../../../../models/SparseAccount';
+import ListGroup from 'react-bootstrap/ListGroup';
 
 interface AccountListProps {
   accounts: Array<SparseAccount>;
@@ -11,19 +12,25 @@ interface AccountListProps {
 
 const AccountList: React.FC<AccountListProps> = (props: AccountListProps) => {
   const accounts = props.accounts.map((account) => ( 
-      <Account 
-        account={account} 
-        selectHandler={props.selectHandler}
-        editHandler={props.editHandler}
-        copyPasswordHandler={props.copyPasswordHandler}
-        key={account.index} 
-      /> 
+      <ListGroup.Item 
+        action 
+        active={account.active}
+        onClick={() => props.selectHandler(account.index)}
+        key={account.index} >
+        <Account 
+          account={account} 
+          editHandler={props.editHandler}
+          copyPasswordHandler={props.copyPasswordHandler}
+        /> 
+      </ListGroup.Item>
     ) 
   );
   return (
     <div>
       <h3>Accounts</h3>
-      {accounts}
+      <ListGroup variant="flush">
+        {accounts}
+      </ListGroup>
     </div>
   );
 }

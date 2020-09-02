@@ -2,7 +2,11 @@ import React from 'react';
 import logo from './logo.svg';
 import Authenticated from './components/Authenticated/Authenticated';
 import SparseAccount from '../../models/SparseAccount';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface AppState {
   authenticated: boolean;
@@ -21,7 +25,6 @@ export default class App extends React.Component<{}, AppState> {
     this.state = {
       authenticated: false,
       accounts: [],
-      username: "",
       host: "",
       currentUrl: ""
     }
@@ -102,19 +105,26 @@ export default class App extends React.Component<{}, AppState> {
   render () {
     return (
       <div className="App">
-      {this.state.authenticated &&
-        <Authenticated
-          username={this.state.username || ""}
-          accounts={this.state.accounts || []}
-          logoutHandler={()=>{}}
-          showManagerHandler={()=>{}}
-          showOptionsHandler={this.showOptions.bind(this)}
-          addAccountHandler={(url: string)=>{}}
-          selectHandler={(id)=>{}}
-          editHandler={(id)=>{}}
-          copyPasswordHandler={(id)=>{}}
-        />
-      }
+        <Container fluid>
+          <Row>
+            <Col><h1>Password Manager</h1></Col>
+          </Row>
+          <Row>
+          {this.state.authenticated &&
+            <Authenticated
+              username={this.state.username || ""}
+              accounts={this.state.accounts || []}
+              logoutHandler={()=>{}}
+              showManagerHandler={()=>{this.sendBackgroundRequest("showManager")}}
+              showOptionsHandler={this.showOptions.bind(this)}
+              addAccountHandler={(url: string)=>{}}
+              selectHandler={(id) => {this.sendBackgroundRequest("setAccount", {index: id})}}
+              editHandler={(id)=>{}}
+              copyPasswordHandler={(id)=>{this.sendBackgroundRequest("copyPassword", {index: id})}}
+            />
+          } 
+          </Row>
+        </Container>
       </div>
     );
   }
