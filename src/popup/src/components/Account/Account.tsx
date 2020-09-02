@@ -2,6 +2,8 @@ import React from 'react';
 import SparseAccount from '../../../../models/SparseAccount';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import { PencilFill } from 'react-bootstrap-icons';
+import { ClipboardData } from 'react-bootstrap-icons';
 
 interface AccountProps {
   account: SparseAccount;
@@ -10,17 +12,23 @@ interface AccountProps {
 }
 
 const Account: React.FC<AccountProps> = (props: AccountProps) => (
-  <div><span>{props.account.name} ({props.account.username})</span>
+  <div>
+    <span>
+      {props.account.name} 
+      {props.account.username !== "" && 
+        <>({props.account.username}) </>
+      }
+    </span>
     <ButtonGroup size="sm">
       <Button 
         onClick={() => props.editHandler(props.account.index)}
-      >
-        Edit
+        variant="light" >
+        <PencilFill/>
       </Button>
       <Button 
         onClick={()=> props.copyPasswordHandler(props.account.index)}
-      >
-        Copy Password
+        variant="light" >
+        <ClipboardData/>
       </Button>
     </ButtonGroup>
   </div>
