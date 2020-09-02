@@ -9,23 +9,24 @@ async function storeData() {
   await settings.store();
   document.getElementById('status').textContent = 'Options saved.';
 }
+function createElement<T = HTMLElement>(elementType, attributes: { [key: string] : string }, textContent?: string): T {
+  let element = document.createElement(elementType);
+  for (let key in attributes) {
+    element.setAttribute(key, attributes[key]); 
+  }
+  if (textContent) {
+    element.textContent = textContent; 
+  }
+  return element;
+}
 function createHTML() {
-  let label = document.createElement('label');
-  label.setAttribute('for','url'); 
-  label.textContent = 'Password-Manager URL:'; 
-  document.body.appendChild(label);
-  let input = document.createElement('input');
-  input.setAttribute('type','url'); 
-  input.setAttribute('id','url'); 
-  input.setAttribute('placeholder','https://www.yourdomain.com/'); 
+  document.body.appendChild(createElement('label', {'for': 'url'}, 'Password-Manager URL:'));
+  let input = createElement('input', { 'type':'url', 'id':'url', 'placeholder':'https://www.yourdomain.com/' } );
   document.body.appendChild(input);
-  let button = document.createElement('button');
-  button.setAttribute('id','save'); 
-  button.textContent = 'store'; 
+  let button = createElement<HTMLButtonElement>('button', {'id': 'save'}, 'store');
   button.onclick = storeData;
   document.body.appendChild(button);
-  let status = document.createElement('p');
-  status.setAttribute('id','status'); 
+  let status = createElement('p', {'id':'status'});
   document.body.appendChild(status);
 }
 
