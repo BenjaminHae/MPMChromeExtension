@@ -118,7 +118,8 @@ export default class App extends React.Component<{}, AppState> {
               showManagerHandler={()=>{this.sendBackgroundRequest("showManager")}}
               showOptionsHandler={this.showOptions.bind(this)}
               addAccountHandler={(url: string)=>{}}
-              selectHandler={(id) => {this.sendBackgroundRequest("setAccount", {index: id})}}
+              selectHandler={(id) => {this.sendBackgroundRequest("setAccount", {index: id}); this.sendBackgroundRequest("AvailableAccounts", {url: this.state.currentUrl});}}
+        
               editHandler={(id)=>{}}
               copyPasswordHandler={(id)=>{this.sendBackgroundRequest("copyPassword", {index: id})}}
             />
