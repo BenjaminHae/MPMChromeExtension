@@ -27,12 +27,7 @@ class AccountManager {
   }
 
   getAccountForURL(url: string): SparseAccount | null {
-    for (let acc of this.getAccountsForURL(url)) {
-      if (acc.active) {
-        return acc;
-      }
-    }
-    return null;
+    return this.getAccountsForURL(url).find((account) => account.active);
   }
 
   getAccountsForURL(url: string): Array<SparseAccount> {
@@ -42,6 +37,7 @@ class AccountManager {
     let accounts: Array<SparseAccount> = [];
     if (this.activeAccountForced && this.activeAccountIndex) {
       accounts.push(this.accountToSparseAccount(this.backend.getAccountByIndex(this.activeAccountIndex)));
+      accounts[0].active = true;
     }
     accounts = accounts.concat(this.backend.getAccounts().filter(
         (account) =>
@@ -51,7 +47,7 @@ class AccountManager {
         (account) =>
         this.accountToSparseAccount(account)
       ));
-    if (!accounts.find((account) => account.active)) {
+    if (accounts.length > 0 && !accounts.find((account) => account.active)) {
       accounts[0].active = true;
     }
     return accounts;
