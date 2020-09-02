@@ -33,7 +33,7 @@ import Settings from '../shared/Settings';
 //   getData from accounts
 
 class DummyMethods {
-  constructor (private backend: BackendGateway, private accounts: AccountManager) {
+  constructor (private backend: BackendGateway, private accounts: AccountManager, private settings: Settings) {
   }
   getBackendHost(): string {
     return "https://testhost.test"
@@ -72,16 +72,19 @@ class DummyMethods {
   logout(): void {
   }
   loadSettings(): void {
+    console.log("reloading settings");
+    settings.load();
   }
 }
 
+let settings = new Settings();
 let backend = new BackendGateway("");
 let accountManager = new AccountManager(backend);
-let popup = new PopupConnector(new DummyMethods(backend, accountManager));
-let tab = new TabConnector(new DummyMethods(backend, accountManager));
+let dummyMethods = new DummyMethods(backend, accountManager, settings)
+let popup = new PopupConnector(dummyMethods);
+let tab = new TabConnector(dummyMethods);
 let iframe = new IFrameConnector(backend);
 let contextMenu = new ContextMenu(tab, accountManager);
-let settings = new Settings();
 settings.settingsObservable
   .subscribe((settings) => {
       backend.setHost(settings.host);
