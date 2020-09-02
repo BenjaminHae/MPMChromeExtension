@@ -33,25 +33,30 @@ import Settings from '../shared/Settings';
 //   getData from accounts
 
 class DummyMethods {
+  private tabs?: TabConnector;
+
   constructor (private backend: BackendGateway, private accounts: AccountManager, private settings: Settings) {
   }
+  setTabs(tabs: TabConnector) {
+    this.tabs = tabs;
+  }
   getBackendHost(): string {
-    return "https://testhost.test"
+    return this.settings.settings.host;
   }
   getLoggedIn(): boolean {
-    return true;
+    return this.backend.authenticated;
   }
   getUsername(): string {
-    return "testuser";
+    return this.backend.username;
   }
   getAccountsForDomain(url: string): Array<SparseAccount> {
     return this.accounts.getAccountsForURL(url);
   }
   getAccountByIndex(index: number): SparseAccount {
-    return {name:"Testaccount", index:index, active:true,username:"bla"}
+    return this.accounts.getAccountByIndex(index);
   }
   getPasswordByAccountIndex(index: number): Promise<string> {
-    return Promise.resolve("testpassword");
+    return this.backend.getPassword(index);
   }
   getLastError(): string {
     return "";
@@ -60,8 +65,11 @@ class DummyMethods {
     return {request: "hi"}
   }
   setActiveAccount(index: number, url: string): void {
+    //Todo filter for url
+    this.accounts.selectAccount(index);
   }
   setActiveAccountWithoutUrl(index: number): void {
+    this.accounts.selectAccount(index);
   }
   setAction(action: string, data: object): void {
   }
@@ -75,6 +83,9 @@ class DummyMethods {
     console.log("reloading settings");
     settings.load();
   }
+  openManager(): void {
+    this.tabs.openManager();
+  }
 }
 
 let settings = new Settings();
@@ -83,6 +94,7 @@ let accountManager = new AccountManager(backend);
 let dummyMethods = new DummyMethods(backend, accountManager, settings)
 let popup = new PopupConnector(dummyMethods);
 let tab = new TabConnector(dummyMethods);
+dummyMethods.setTabs(tab);
 let iframe = new IFrameConnector(backend);
 let contextMenu = new ContextMenu(tab, accountManager);
 settings.settingsObservable

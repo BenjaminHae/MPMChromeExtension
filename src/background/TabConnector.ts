@@ -15,6 +15,11 @@ class TabConnector {
     this.openListener();
   }
 
+  openManager() {
+    const host = this.meth.getBackendHost();
+    chrome.tabs.create({url: host});
+  }
+
   validateSender(sender): boolean {
     if (sender["id"] === chrome.runtime.id) {
       return true;

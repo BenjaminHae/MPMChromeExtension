@@ -53,6 +53,10 @@ class AccountManager {
     return accounts;
   }
 
+  getAccountByIndex(index: number) {
+    return this.accountToSparseAccount(this.backend.getAccountByIndex(index));
+  }
+
   async getPassword(account: SparseAccount): Promise<string> {
     this.resetSelectForced();
     return this.backend.getPassword(account.index);

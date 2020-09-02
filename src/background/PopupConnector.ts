@@ -7,8 +7,10 @@ interface methods {
   getLastError: () => string;
   getAccountsForDomain: (url: string) => Array<SparseAccount>;
   setActiveAccount: (index: number, url: string) => void;
+  setActiveAccountWithoutUrl: (index: number) => void;
   getPasswordByAccountIndex: (index: number) => Promise<string>;
   setAction: (action: string, data: object) => void;
+  openManager: () => void;
 }
 class PopupConnector {
   private meth: methods;
@@ -60,10 +62,13 @@ class PopupConnector {
         this.sendPopupRequest(port, 'AvailableAccounts', {'accounts':send, 'url':data["url"]}); 
         break;
       case "setAccount":
-        this.meth.setActiveAccount(data["index"],data["url"]);
+        this.meth.setActiveAccountWithoutUrl(data["index"]);
         break;
       case "setAction":
         this.meth.setAction(data["action"], data["data"]);
+        break;
+      case "showManager":
+        this.meth.openManager();
         break;
       case "copyPassword":
         this.meth.getPasswordByAccountIndex(data["index"])

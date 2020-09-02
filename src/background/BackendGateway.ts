@@ -32,6 +32,7 @@ class KeyCredentialProvider {
 class BackendGateway {
   authenticated: boolean;
   accountsReady: boolean;
+  username: string;
   private backend: BackendService;
 
   constructor (private host: string) {
@@ -71,14 +72,15 @@ class BackendGateway {
   cleanup() {
     this.authenticated = false;
     this.accountsReady = false;
+    this.username = "";
   }
   
   async setUserSession(username: string, key: any): Promise<void> {
     let credentials = new KeyCredentialProvider(key);
     await this.backend.waitForBackend();
     await this.backend.logonWithCredentials(credentials, username);
+    this.username = username;
     console.log('login successful');
-    return
   }
 
   getAccountByIndex(accountId: number): Account {
