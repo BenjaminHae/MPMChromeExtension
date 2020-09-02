@@ -7,6 +7,7 @@ function loadData(items) {
 async function storeData() {
   settings.settings.host = (document.getElementById('url') as HTMLInputElement).value; 
   await settings.store();
+  chrome.runtime.sendMessage({"request":"reloadSettings"}, function(response) {}); 
   document.getElementById('status').textContent = 'Options saved.';
 }
 function createElement<T = HTMLElement>(elementType, attributes: { [key: string] : string }, textContent?: string): T {
