@@ -39,7 +39,7 @@ export default class App extends React.Component<{}, AppState> {
       switch(request["request"]){
         case "LoggedIn": this.showLoggedIn(request["data"]["loggedIn"], request["data"]["username"]); break;
         case "AvailableAccounts": this.showAvailableAccounts(request["data"]["accounts"],request["data"]["url"]); break;
-        case "Host": this.setState({host: request["data"]["url"]}); break;
+        case "Host": this.setHost(request["data"]["url"]); break;
         case "copyPassword": navigator.clipboard.writeText(request["data"]["text"]); break;
       }
     });
@@ -60,16 +60,21 @@ export default class App extends React.Component<{}, AppState> {
     this.setState( {authenticated: loggedIn, username: username});
     if(!this.state.authenticated) {
       if (this.state.host !== "") {
+        console.log("not logged in should open manager");
         this.openHost();
-      }
-      else {
-        this.showOptions();
       }
     }
   }
 
   showAvailableAccounts(accounts: Array<SparseAccount>, url: string) {
     this.setState({accounts: accounts, currentUrl: url});
+  }
+
+  setHost(host: string) {
+     this.setState({host: host});
+     if (host === "") {
+       this.showOptions();  
+     }
   }
 
   getCurrentTabUrl(): Promise<string> {
@@ -94,12 +99,14 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   openHostWithActions(actions: Array<object>) {
-    let action = actions.shift();
-    while (action !== null) {
-      this.sendBackgroundRequest("setAction", action);
-      action = actions.shift();
+    if(this.state.host !== "" ) {
+      let action = actions.shift();
+      while (action) {
+        this.sendBackgroundRequest("setAction", action);
+        action = actions.shift();
+      }
+      this.sendBackgroundRequest("showManager");
     }
-    chrome.tabs.create({ url: this.state.host });
   }
   
   openHost() {
@@ -123,7 +130,7 @@ export default class App extends React.Component<{}, AppState> {
               username={this.state.username || ""}
               accounts={this.state.accounts || []}
               logoutHandler={()=>{}}
-              showManagerHandler={()=>{this.sendBackgroundRequest("showManager")}}
+              showManagerHandler={()=>{this.openHost()}}
               showOptionsHandler={this.showOptions.bind(this)}
               addAccountHandler={()=>{/*this.state.currentUrl*/}}
               selectHandler={(id) => {this.sendBackgroundRequest("setAccount", {index: id}); this.sendBackgroundRequest("AvailableAccounts", {url: this.state.currentUrl});}}

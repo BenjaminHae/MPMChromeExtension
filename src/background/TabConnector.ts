@@ -17,7 +17,9 @@ class TabConnector {
 
   openManager() {
     const host = this.meth.getBackendHost();
-    chrome.tabs.create({url: host});
+    if (host !== "") {
+      chrome.tabs.create({url: host});
+    }
   }
 
   validateSender(sender): boolean {

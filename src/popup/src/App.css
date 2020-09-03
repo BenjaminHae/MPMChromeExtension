@@ -1,6 +1,18 @@
 body {
   font-size: 80%;
+  min-width: 20em;
+  padding: 0.5em;
+}
+h1 {
+  font-size: 1.8em;
+  padding-bottom: 0.2em;
+}
+h3 {
+  font-size: 1.3rem;
+  padding-top: 0.2em;
+}
+.list-group-item {
+  padding: .75rem 0.5rem;
 }
 .App {
 }
-
