@@ -58,6 +58,14 @@ export default class App extends React.Component<{}, AppState> {
 
   showLoggedIn(loggedIn: boolean, username?: string) {
     this.setState( {authenticated: loggedIn, username: username});
+    if(!this.state.authenticated) {
+      if (this.state.host !== "") {
+        this.openHost();
+      }
+      else {
+        this.showOptions();
+      }
+    }
   }
 
   showAvailableAccounts(accounts: Array<SparseAccount>, url: string) {
@@ -117,7 +125,7 @@ export default class App extends React.Component<{}, AppState> {
               logoutHandler={()=>{}}
               showManagerHandler={()=>{this.sendBackgroundRequest("showManager")}}
               showOptionsHandler={this.showOptions.bind(this)}
-              addAccountHandler={(url: string)=>{}}
+              addAccountHandler={()=>{/*this.state.currentUrl*/}}
               selectHandler={(id) => {this.sendBackgroundRequest("setAccount", {index: id}); this.sendBackgroundRequest("AvailableAccounts", {url: this.state.currentUrl});}}
         
               editHandler={(id)=>{}}

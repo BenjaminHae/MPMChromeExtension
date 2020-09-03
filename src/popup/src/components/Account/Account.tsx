@@ -19,13 +19,15 @@ const Account: React.FC<AccountProps> = (props: AccountProps) => (
         <>({props.account.username}) </>
       }
     </span>
-    <ButtonGroup size="sm">
+    <ButtonGroup size="sm" className="float-right">
       <Button 
+        aria-label="Edit Account"
         onClick={() => props.editHandler(props.account.index)}
         variant="light" >
         <PencilFill/>
       </Button>
       <Button 
+        aria-label="Copy Password to Clipboard"
         onClick={()=> props.copyPasswordHandler(props.account.index)}
         variant="light" >
         <ClipboardData/>

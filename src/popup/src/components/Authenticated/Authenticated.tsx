@@ -12,7 +12,7 @@ interface AuthenticatedProps {
   logoutHandler: () => void;
   showManagerHandler: () => void;
   showOptionsHandler: () => void;
-  addAccountHandler: (url: string) => void;// not sure if url is necessary
+  addAccountHandler: () => void;// not sure if url is necessary
   selectHandler: (id: number) => void;
   editHandler: (id: number) => void;
   copyPasswordHandler: (id: number) => void;

@@ -2,6 +2,7 @@ import React from 'react';
 import Account from '../Account/Account';
 import SparseAccount from '../../../../models/SparseAccount';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Alert from 'react-bootstrap/Alert';
 
 interface AccountListProps {
   accounts: Array<SparseAccount>;
@@ -28,6 +29,9 @@ const AccountList: React.FC<AccountListProps> = (props: AccountListProps) => {
   return (
     <div>
       <h3>Accounts</h3>
+      { props.accounts.length === 0 &&
+        <Alert variant="info">No accounts available</Alert>
+      }
       <ListGroup variant="flush">
         {accounts}
       </ListGroup>
