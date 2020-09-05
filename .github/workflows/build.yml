@@ -1,0 +1,47 @@
+name: build application
+on: [push]
+
+jobs:
+  build_react:
+    name: build 
+    runs-on: ubuntu-latest
+    steps:
+      - run: mkdir extension
+        working-directory: .
+      - run: mkdir manager
+        working-directory: .
+      - name: checkout
+        uses: actions/checkout@v2
+        working-directory: ./extension
+      - name: checkout
+        uses: actions/checkout@v2
+        with: 
+          repository: 'BenjaminHae/modern-password-manager'
+        working-directory: ./manager
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Cache node
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-react-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      - run: npm install
+        working-directory: ./extension
+      - run: npm link ../manager/OpenAPIReactClient/
+        working-directory: ./extension
+      - run: npm install
+        working-directory: ./extension/src/popup/
+      - run: npm run build
+        working-directory: ./extension
+        env:
+          CI: ""
+      - run: npm run zip
+        working-directory: ./extension
+      - uses: actions/upload-artifact@v2
+        with:
+          name: MPMextension
+          path: extension.zip
