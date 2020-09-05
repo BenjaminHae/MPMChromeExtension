@@ -10,7 +10,6 @@ jobs:
         working-directory: .
       - name: checkout
         uses: actions/checkout@v2
-        working-directory: ./
       - run: git clone https://github.com/BenjaminHae/modern-password-manager.git manager
       - name: Use Node.js
         uses: actions/setup-node@v1
