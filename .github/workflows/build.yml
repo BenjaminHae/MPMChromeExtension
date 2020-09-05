@@ -6,18 +6,12 @@ jobs:
     name: build 
     runs-on: ubuntu-latest
     steps:
-      - run: mkdir extension
-        working-directory: .
       - run: mkdir manager
         working-directory: .
       - name: checkout
         uses: actions/checkout@v2
-        working-directory: ./extension
-      - name: checkout
-        uses: actions/checkout@v2
-        with: 
-          repository: 'BenjaminHae/modern-password-manager'
-        working-directory: ./manager
+        working-directory: ./
+      - run: git clone https://github.com/BenjaminHae/modern-password-manager.git manager
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
@@ -30,17 +24,17 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - run: npm install
-        working-directory: ./extension
-      - run: npm link ../manager/OpenAPIReactClient/
-        working-directory: ./extension
+        working-directory: ./
+      - run: npm link ./manager/OpenAPIReactClient/
+        working-directory: ./
       - run: npm install
-        working-directory: ./extension/src/popup/
+        working-directory: ./src/popup/
       - run: npm run build
-        working-directory: ./extension
+        working-directory: ./
         env:
           CI: ""
       - run: npm run zip
-        working-directory: ./extension
+        working-directory: ./
       - uses: actions/upload-artifact@v2
         with:
           name: MPMextension
