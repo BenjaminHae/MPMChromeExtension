@@ -12,7 +12,7 @@ class ExtensionConnector {
     return response.data["url"];
   }
 
-  private sendMessageToExtension(request: string, message: {} = {}):Promise<{}> {
+  private sendMessageToExtension(request: string, message: {} = {}):Promise<any> {
     return new Promise((resolve) => {
       chrome.runtime.sendMessage({request: request, data: message, origin: window.location.origin}, (data) => resolve(data));
     });

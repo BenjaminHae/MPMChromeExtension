@@ -45,11 +45,12 @@ class TabConnector {
         }
         return;
       }
-      if (!message["origin"] !== this.meth.getBackendHost()) {
+      if (message["origin"] !== this.meth.getBackendHost()) {
         console.log(`origin check failed, origin: ${message["origin"]} host: ${this.meth.getBackendHost()}`);
         if (message["request"] == "actions") {
           let action = {"request": "wrongHost"};
           sendResponse(action);
+        }
         return;
       }
       console.log(sender + " connected .....");

@@ -19,7 +19,7 @@ class IFrameConnector {
       this.hasLoaded = true;
       console.log("sending key to iframe");
       this.sendDataToIFrame();
-    }
+    });
     return iframe;
   }
   removeIFrame() {
@@ -27,9 +27,10 @@ class IFrameConnector {
   }
 
   sendSession(session: {}) {
-    this.sendMessage("session", session)
+    this.sendMessage("session", session);
   }
-  sendMessage(request: string; data: {}) {
+
+  sendMessage(request: string, data: {}) {
     this.dataBuffer.push({request: request, data: data});
     this.sendDataToIFrame();
   }
@@ -38,7 +39,7 @@ class IFrameConnector {
     if (this.iframeHasLoaded !== true ) {
       return false;
     }
-    while (let element = this.dataBuffer.shift()) {
+    while ((let element = this.dataBuffer.shift()) !== undefined) {
       this.iframe.contentWindow.postMessage(element, "*");
     }
     return true;
