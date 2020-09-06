@@ -1,5 +1,5 @@
-const isThisContentscript = true;
-console.log('isThisContentscript', isThisContentscript);
+import ExtensionConnector from './ExtensionConnector';
+import IFrameConnector from './IFrameConnector';
 
 interface Window { pluginSystem: any; }
 
@@ -24,16 +24,11 @@ interface Window { pluginSystem: any; }
 // preLogout -> dologout in extension
 // drawAccount -> add select in extension button
 
+//todo make one generic event with a random prefix. Handle specific type of event in data
 document.addEventListener('loginSuccessful', (e: CustomEvent) => {
     console.log(e);
-    let iframe = document.createElement('iframe');
-    iframe.setAttribute('src', chrome.extension.getURL('webaccessible/index.html'));
-    document.body.appendChild(iframe);
-    iframe.addEventListener("load", () => {
-      console.log("sending key to iframe");
-      iframe.contentWindow.postMessage({"request":"session", "data": e.detail}, "*");
-      //iframe.parentNode.removeChild(iframe);
-    })
+    let iframeConnector = new IFrameConnector();
+    iframeConnector.sendSession("session", e.detail);
   }, 
   false
 );
@@ -48,8 +43,7 @@ function executeScript(script, args = null) {
 
 executeScript(function() {
   //Todo validate if this is the password-manager
-  var wrongHost = false;
-  var actionsReceived = false;
+  let wrongHost = false;
 
   class BrowserExtensionPlugin {
     actionsReceived: boolean = false;
@@ -58,11 +52,21 @@ executeScript(function() {
       let evt = new CustomEvent('loginSuccessful', {detail:{username: username, key: key}});
       document.dispatchEvent(evt);
     }
+
+    // this callback reacts to accounts in backend being ready
+    // it is possibly necessary to react to the "account view" being ready
+    accountsReady() {
+        //perform actions
+    }
+
+    setAction(action: {}) {
+    }
   }
-  var plugin = new BrowserExtensionPlugin();
+  let plugin = new BrowserExtensionPlugin();
   window.pluginSystem.registerPlugin(new BrowserExtensionPlugin());
-  document.addEventListener('actionsReceived', function(e) {
-      actionsReceived = true;
+  document.addEventListener('actionsReceived', (e: CustomEvent) => {
+      plugin.setAction(e.data);
+      plugin.actionsReceived = true;
       });
   });
 

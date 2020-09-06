@@ -29,7 +29,7 @@ class TabConnector {
     else if (sender["url"].startsWith("chrome-extension://" + chrome.runtime.id + '/')){
       return true;
     }
-    else if (sender["url"] === this.meth.getBackendHost() + "password.php") {
+    else if (sender["url"].startsWith(this.meth.getBackendHost())) {
       return true;
     }
     return false;
@@ -45,15 +45,19 @@ class TabConnector {
         }
         return;
       }
+      if (!message["origin"] !== this.meth.getBackendHost()) {
+        console.log(`origin check failed, origin: ${message["origin"]} host: ${this.meth.getBackendHost()}`);
+        if (message["request"] == "actions") {
+          let action = {"request": "wrongHost"};
+          sendResponse(action);
+        return;
+      }
       console.log(sender + " connected .....");
       this.handleTabRequest(message["request"], message["data"], sendResponse);
     });
   }
   handleTabRequest(request: string, data: object, sendResponse) {
     switch(request){
-      case "session": 
-        this.meth.setUserSession(data["username"], data["key"]); 
-        break;
       case "logout":  
         this.meth.logout(); 
         break;
