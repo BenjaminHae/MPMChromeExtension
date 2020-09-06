@@ -16,7 +16,7 @@ class IFrameConnector {
     iframe.setAttribute('src', chrome.extension.getURL('webaccessible/index.html'));
     document.body.appendChild(iframe);
     iframe.addEventListener("load", () => {
-      this.hasLoaded = true;
+      this.iframeHasLoaded = true;
       console.log("sending key to iframe");
       this.sendDataToIFrame();
     });
@@ -26,11 +26,11 @@ class IFrameConnector {
     this.iframe.parentNode.removeChild(this.iframe);
   }
 
-  sendSession(session: {}) {
+  sendSession(session: any) {
     this.sendMessage("session", session);
   }
 
-  sendMessage(request: string, data: {}) {
+  sendMessage(request: string, data: any) {
     this.dataBuffer.push({request: request, data: data});
     this.sendDataToIFrame();
   }
@@ -39,7 +39,8 @@ class IFrameConnector {
     if (this.iframeHasLoaded !== true ) {
       return false;
     }
-    while ((let element = this.dataBuffer.shift()) !== undefined) {
+    let element: PostMessageElement;
+    while (element = this.dataBuffer.shift()) {
       this.iframe.contentWindow.postMessage(element, "*");
     }
     return true;

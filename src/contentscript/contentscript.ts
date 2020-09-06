@@ -65,7 +65,7 @@ executeScript(function() {
   let plugin = new BrowserExtensionPlugin();
   window.pluginSystem.registerPlugin(new BrowserExtensionPlugin());
   document.addEventListener('actionsReceived', (e: CustomEvent) => {
-      plugin.setAction(e.data);
+      plugin.setAction(e.detail);
       plugin.actionsReceived = true;
       });
   });
