@@ -5,7 +5,7 @@ interface PostMessageElement {
 class IFrameConnector {
   iframe: HTMLIFrameElement;
   iframeHasLoaded: boolean = false;
-  dataBuffer: Array<PostMessageElement>;
+  dataBuffer: Array<PostMessageElement> = [];
     
   constructor () {
     this.iframe = this.createIFrame();
