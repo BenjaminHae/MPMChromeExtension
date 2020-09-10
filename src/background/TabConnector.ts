@@ -62,14 +62,21 @@ class TabConnector {
       case "logout":  
         this.meth.logout(); 
         break;
-      case "actions": var action = this.meth.getLatestAction();
-                      if (action == null)
-                        action = {request: "none"};
-                      sendResponse(action);
-                      break;
-      case "host": sendResponse({"request":"host", "data":{"url":this.meth.getBackendHost()}}); break;
-      case "reloadSettings": this.meth.loadSettings(); break;
-      case "selectAccount": this.meth.setActiveAccountWithoutUrl(data["index"]); break;
+      case "actions": 
+        var action = this.meth.getLatestAction();
+        if (action == null)
+          action = {request: "none"};
+        sendResponse(action);
+        break;
+      case "host": 
+        sendResponse({"request":"host", "data":{"url":this.meth.getBackendHost()}}); 
+        break;
+      case "reloadSettings": 
+        this.meth.loadSettings(); 
+        break;
+      case "selectAccount": 
+        this.meth.setActiveAccountWithoutUrl(data["index"]); 
+        break;
     }
   }
   insertTextIntoSelectedInput(text: string, frameId: number = 0) {
