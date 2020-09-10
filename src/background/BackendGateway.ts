@@ -34,6 +34,7 @@ class BackendGateway {
   accountsReady: boolean;
   username: string;
   private backend: BackendService;
+  private credentials: {username: string, key:any};
 
   constructor (private host: string) {
     this.cleanup();
@@ -73,14 +74,20 @@ class BackendGateway {
     this.authenticated = false;
     this.accountsReady = false;
     this.username = "";
+    this.credentials = undefined;
   }
   
   async setUserSession(username: string, key: any): Promise<void> {
     let credentials = new KeyCredentialProvider(key);
     await this.backend.waitForBackend();
     await this.backend.logonWithCredentials(credentials, username);
+    this.credentials = {username: username, key: key};
     this.username = username;
     console.log('login successful');
+  }
+
+  getUserSession(): {username: string, key:any} | undefined {
+    return this.credentials;
   }
 
   getAccountByIndex(accountId: number): Account {
@@ -98,6 +105,7 @@ class BackendGateway {
   getAccounts(): Array<Account> {
     return this.backend.accounts;
   }
+
 }
 
 export default BackendGateway;
