@@ -1,14 +1,20 @@
 interface PostMessageElement {
   request: string;
-  data: {};
+  data: object;
 }
+
+interface IFrameConnectorCallbacks {
+  setSession(username: string, key: CryptoKey);
+}
+
 class IFrameConnector {
   iframe: HTMLIFrameElement;
   iframeHasLoaded: boolean = false;
   dataBuffer: Array<PostMessageElement> = [];
     
-  constructor () {
+  constructor (private meth?: IFrameConnectorCallbacks) {
     this.iframe = this.createIFrame();
+    window.addEventListener('message', (event) => this.receiveMessage(event), false);
   }
 
   createIFrame(): HTMLIFrameElement {
@@ -30,7 +36,11 @@ class IFrameConnector {
     this.sendMessage("session", session);
   }
 
-  sendMessage(request: string, data: any) {
+  retreiveSession() {
+    this.sendMessage("retreiveSession");
+  }
+
+  sendMessage(request: string, data?: any) {
     this.dataBuffer.push({request: request, data: data});
     this.sendDataToIFrame();
   }
@@ -44,6 +54,16 @@ class IFrameConnector {
       this.iframe.contentWindow.postMessage(element, "*");
     }
     return true;
+  }
+  receiveMessage(event: MessageEvent): void {
+    if (event.source !== this.iframe.contentWindow) {
+      return
+    }
+    if (event.data.request === "session") {
+      if (this.meth) {
+        this.meth.setSession(event.data.data);
+      }
+    }
   }
 }
 

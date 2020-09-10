@@ -1,8 +1,19 @@
+interface ExtensionConnectorCallbacks {
+  addAccount(proposals: {[index: string]:string}): void;
+  editAccount(index: number): void;
+}
 class ExtensionConnector {
+
+  constructor () {
+  }
   getActions() {
   }
   selectAccount(index: number) {
     this.sendMessageToExtensionWithoutResponse("selectAccount", {index: index});
+  }
+  requestLogin(): boolean {
+    let response = await this.sendMessageToExtension("login");
+    return response.data["available"];
   }
   logout() {
     this.sendMessageToExtensionWithoutResponse("logout");

@@ -5,6 +5,8 @@ declare global {
   interface WindowWithPluginSystem { pluginSystem: any; }
 }
 
+let extensionConnector = new ExtensionConnector();
+
 // listen to:
 //   login done (fetch password)
 //   Logout
@@ -26,11 +28,26 @@ declare global {
 // preLogout -> dologout in extension
 // drawAccount -> add select in extension button
 
+sendEvent(request: string, data?: object) {
+  let evt = new CustomEvent('MPMExtensionEventToPlugin', {detail:{request: request, data: data}});
+  document.dispatchEvent(evt);
+}
+
 //todo make one generic event with a random prefix. Handle specific type of event in data
-document.addEventListener('loginSuccessful', (e: CustomEvent) => {
+document.addEventListener('MPMExtensionEventToContentScript', async (e: CustomEvent) => {
     console.log(e);
-    let iframeConnector = new IFrameConnector();
-    iframeConnector.sendSession(e.detail);
+    switch (e.detail.request) {
+      case "loginSuccessful": 
+        let iframeConnector = new IFrameConnector();
+        iframeConnector.sendSession(e.detail.data);
+        break;
+      case "loginViewReady":
+        if (await extensionConnector.requestLogin()) {
+          let iframeConnector = new IFrameConnector({setSession: (username, key)=>{sendEvent("session", {username: username, key: key})}});
+          iframeConnector.retreiveSession();//todo add random identifier that is then sent back
+        }
+        break;
+    }
   }, 
   false
 );
@@ -48,11 +65,23 @@ executeScript(function() {
   let wrongHost = false;
 
   class BrowserExtensionPlugin {
-    actionsReceived: boolean = false;
+    private actionsReceived: boolean = false;
+
+    constructor() {
+    }
+
+    private sendEvent(request: string, data?: object) {
+      let evt = new CustomEvent('MPMExtensionEventToContentScript', {detail:{request: request, data: data}});
+      document.dispatchEvent(evt);
+    }
     loginSuccessful(username: string, key: any): void {
       console.log("login Successful");
-      let evt = new CustomEvent('loginSuccessful', {detail:{username: username, key: key}});
-      document.dispatchEvent(evt);
+      this.sendEvent('loginSuccessful', {username: username, key: key});
+    }
+
+    loginViewReady() {
+      console.log("login view ready");
+      this.sendEvent('loginViewReady');
     }
 
     // this callback reacts to accounts in backend being ready
@@ -63,12 +92,21 @@ executeScript(function() {
 
     setAction(action: {}) {
     }
+
+    doLogin(username: string, key: CryptoKey) {
+
+    }
   }
   let plugin = new BrowserExtensionPlugin();
   ((window as unknown) as WindowWithPluginSystem).pluginSystem.registerPlugin(new BrowserExtensionPlugin());
-  document.addEventListener('actionsReceived', (e: CustomEvent) => {
-      plugin.setAction(e.detail);
-      plugin.actionsReceived = true;
-      });
-  });
+  document.addEventListener('MPMExtensionEventToContentScript', async (e: CustomEvent) => {
+    console.log(e);
+    switch (e.detail.request) {
+      case "session": 
+        plugin.doLogin(e.detail.data.username, e.detail.data.key);
+        break;
+    }
+  }, 
+  false
+);
 
