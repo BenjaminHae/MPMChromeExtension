@@ -75,7 +75,9 @@ class DummyMethods {
   }
   async setUserSession(username: string, key: any): Promise<void> {
     await this.backend.setUserSession(username, key);
-    return
+  }
+  getUserSession(): {username: string, key:any} {
+    return this.backend.getUserSession();
   }
   logout(): void {
   }
