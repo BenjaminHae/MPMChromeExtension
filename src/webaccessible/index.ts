@@ -1,8 +1,13 @@
 window.addEventListener("message", receiveMessage, false);
 console.log('webaccessible running');
 
-function receiveMessage(event) {
+function receiveMessage(event: MessageEvent) {
   console.log("received Message");
   console.log(event);
-  chrome.extension.getBackgroundPage().postMessage(event.data, "*");
+  if (event.data.to && (event.data.to === "page")) {
+    window.parent.postMessage(event.data, '*');// todo: * durch host ersetzen
+  }
+  else {
+    chrome.extension.getBackgroundPage().postMessage(event.data, "*");
+  }
 }
