@@ -61,7 +61,7 @@ class IFrameConnector {
     }
     if (event.data.request === "session") {
       if (this.meth) {
-        this.meth.setSession(event.data.data);
+        this.meth.setSession(event.data.data.username, event.data.data.key);
       }
     }
   }

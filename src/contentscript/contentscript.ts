@@ -28,7 +28,7 @@ let extensionConnector = new ExtensionConnector();
 // preLogout -> dologout in extension
 // drawAccount -> add select in extension button
 
-sendEvent(request: string, data?: object) {
+function sendEvent(request: string, data?: object) {
   let evt = new CustomEvent('MPMExtensionEventToPlugin', {detail:{request: request, data: data}});
   document.dispatchEvent(evt);
 }
