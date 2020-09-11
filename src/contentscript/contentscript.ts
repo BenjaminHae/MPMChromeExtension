@@ -90,7 +90,7 @@ executeScript(function() {
         //perform actions
     }
 
-    setAction(action: {}) {
+    setAction(action: object) {
     }
 
     doLogin(username: string, key: CryptoKey) {
@@ -98,15 +98,15 @@ executeScript(function() {
     }
   }
   let plugin = new BrowserExtensionPlugin();
-  ((window as unknown) as WindowWithPluginSystem).pluginSystem.registerPlugin(new BrowserExtensionPlugin());
+  ((window as unknown) as WindowWithPluginSystem).pluginSystem.registerPlugin(plugin);
   document.addEventListener('MPMExtensionEventToContentScript', async (e: CustomEvent) => {
-    console.log(e);
-    switch (e.detail.request) {
-      case "session": 
-        plugin.doLogin(e.detail.data.username, e.detail.data.key);
-        break;
-    }
-  }, 
-  false
-);
+      console.log(e);
+      switch (e.detail.request) {
+        case "session": 
+          plugin.doLogin(e.detail.data.username, e.detail.data.key);
+          break;
+      }
+    }, 
+    false);
+});
 

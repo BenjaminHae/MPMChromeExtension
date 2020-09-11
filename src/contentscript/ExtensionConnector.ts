@@ -11,7 +11,7 @@ class ExtensionConnector {
   selectAccount(index: number) {
     this.sendMessageToExtensionWithoutResponse("selectAccount", {index: index});
   }
-  async requestLogin(): boolean {
+  async requestLogin(): Promise<boolean> {
     let response = await this.sendMessageToExtension("login");
     return response.data["available"];
   }
