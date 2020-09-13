@@ -2,9 +2,12 @@ import ExtensionConnector from './ExtensionConnector';
 import IFrameConnector from './IFrameConnector';
 import { ICredentialProvider } from '../backend/controller/credentialProvider';
 
-declare global {
-  interface WindowWithPluginSystem { pluginSystem: any; }
+interface IPluginSystem {
+  backendLogin(credentialProvider: ICredentialProvider, username?: string): void;
+  registerPlugin(plugin: any): void;
 }
+
+interface WindowWithPluginSystem { pluginSystem: IPluginSystem; }
 
 let extensionConnector = new ExtensionConnector();
 
@@ -61,10 +64,6 @@ function executeScript(script, args = null) {
     executableScript.remove();
 }
 
-interface IPluginSystem {
-  backendLogin(credentialProvider: ICredentialProvider, username?: string): void;
-}
-
 executeScript(function() {
   //Todo validate if this is the password-manager
   let wrongHost = false;
@@ -100,14 +99,15 @@ executeScript(function() {
 
     doLogin(username: string, key: CryptoKey) {
       let credentials = {
-        getKey: () => { return key },
-        cleanUp: () => { return Promise.resolve(void)}
+        getKey: () => key,
+        cleanUp: () => Promise.resolve()
       };
-      this.pluginSystem.doLogin(credentials, username);
+      this.pluginSystem.backendLogin(credentials, username);
     }
   }
-  let plugin = new BrowserExtensionPlugin();
-  ((window as unknown) as WindowWithPluginSystem).pluginSystem.registerPlugin(plugin);
+  const pluginSystem = ((window as unknown) as WindowWithPluginSystem).pluginSystem
+  const plugin = new BrowserExtensionPlugin(pluginSystem);
+  pluginSystem.registerPlugin(plugin);
   document.addEventListener('MPMExtensionEventToContentScript', async (e: CustomEvent) => {
       console.log(e);
       switch (e.detail.request) {
