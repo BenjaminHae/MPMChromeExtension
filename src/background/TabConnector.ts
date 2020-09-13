@@ -4,6 +4,7 @@ interface methods {
   setUserSession: (username: string, key: any) => void; 
   getBackendHost: () => string;
   logout: () => void; 
+  getLoggedIn: () => boolean;
   getLatestAction: () => any;
   loadSettings: () => any;
   setActiveAccountWithoutUrl: (index: number) => void;
@@ -61,6 +62,9 @@ class TabConnector {
     switch(request){
       case "logout":  
         this.meth.logout(); 
+        break;
+      case "login":  
+        sendResponse({"request":"host", "data":{"available":this.meth.getLoggedIn()}}); 
         break;
       case "actions": 
         var action = this.meth.getLatestAction();
