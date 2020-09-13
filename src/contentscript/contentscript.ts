@@ -1,5 +1,6 @@
 import ExtensionConnector from './ExtensionConnector';
 import IFrameConnector from './IFrameConnector';
+import { ICredentialProvider } from '../backend/controller/credentialProvider';
 
 declare global {
   interface WindowWithPluginSystem { pluginSystem: any; }
@@ -60,6 +61,10 @@ function executeScript(script, args = null) {
     executableScript.remove();
 }
 
+interface IPluginSystem {
+  backendLogin(credentialProvider: ICredentialProvider, username?: string): void;
+}
+
 executeScript(function() {
   //Todo validate if this is the password-manager
   let wrongHost = false;
@@ -67,7 +72,7 @@ executeScript(function() {
   class BrowserExtensionPlugin {
     private actionsReceived: boolean = false;
 
-    constructor() {
+    constructor(private pluginSystem: IPluginSystem) {
     }
 
     private sendEvent(request: string, data?: object) {
@@ -94,7 +99,11 @@ executeScript(function() {
     }
 
     doLogin(username: string, key: CryptoKey) {
-
+      let credentials = {
+        getKey: () => { return key },
+        cleanUp: () => { return Promise.resolve(void)}
+      };
+      this.pluginSystem.doLogin(credentials, username);
     }
   }
   let plugin = new BrowserExtensionPlugin();
