@@ -108,7 +108,7 @@ executeScript(function() {
   const pluginSystem = ((window as unknown) as WindowWithPluginSystem).pluginSystem
   const plugin = new BrowserExtensionPlugin(pluginSystem);
   pluginSystem.registerPlugin(plugin);
-  document.addEventListener('MPMExtensionEventToContentScript', async (e: CustomEvent) => {
+  document.addEventListener('MPMExtensionEventToPlugin', (e: CustomEvent) => {
       console.log(e);
       switch (e.detail.request) {
         case "session": 
