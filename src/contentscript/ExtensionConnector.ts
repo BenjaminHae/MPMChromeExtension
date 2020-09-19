@@ -1,12 +1,15 @@
-interface ExtensionConnectorCallbacks {
-  addAccount(proposals: {[index: string]:string}): void;
-  editAccount(index: number): void;
-}
+import Action from '../models/Action';
+
 class ExtensionConnector {
 
   constructor () {
   }
-  getActions() {
+  async getAction(): Promise<Action | undefined> {
+    let response = await this.sendMessageToExtension("action");
+    console.log(response);
+    if (response.data)
+      return response.data as Action
+    return undefined;
   }
   selectAccount(index: number) {
     this.sendMessageToExtensionWithoutResponse("selectAccount", {index: index});

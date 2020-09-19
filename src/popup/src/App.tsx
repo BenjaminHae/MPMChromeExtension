@@ -2,6 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import Authenticated from './components/Authenticated/Authenticated';
 import SparseAccount from '../../models/SparseAccount';
+import Action from '../../models/Action';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -98,7 +99,7 @@ export default class App extends React.Component<{}, AppState> {
     });
   }
 
-  openHostWithActions(actions: Array<object>) {
+  openHostWithActions(actions: Array<Action>) {
     if(this.state.host !== "" ) {
       let action = actions.shift();
       while (action) {
@@ -132,10 +133,9 @@ export default class App extends React.Component<{}, AppState> {
               logoutHandler={()=>{}}
               showManagerHandler={()=>{this.openHost()}}
               showOptionsHandler={this.showOptions.bind(this)}
-              addAccountHandler={()=>{/*this.state.currentUrl*/}}
+              addAccountHandler={()=>{this.openHostWithActions([{action: "add", data: {url: this.state.currentUrl}}])}}
               selectHandler={(id) => {this.sendBackgroundRequest("setAccount", {index: id}); this.sendBackgroundRequest("AvailableAccounts", {url: this.state.currentUrl});}}
-        
-              editHandler={(id)=>{}}
+              editHandler={(id: number)=>{this.openHostWithActions([{action: "edit", data: {index: id}}])}}
               copyPasswordHandler={(id)=>{this.sendBackgroundRequest("copyPassword", {index: id})}}
             />
           } 

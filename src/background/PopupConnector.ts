@@ -1,4 +1,5 @@
 import SparseAccount from '../models/SparseAccount';
+import Action from '../models/Action';
 
 interface methods {
   getBackendHost: () => string;
@@ -9,11 +10,12 @@ interface methods {
   setActiveAccount: (index: number, url: string) => void;
   setActiveAccountWithoutUrl: (index: number) => void;
   getPasswordByAccountIndex: (index: number) => Promise<string>;
-  setAction: (action: string, data: object) => void;
+  setAction: (action: Action) => void;
   openManager: () => void;
 }
 class PopupConnector {
   private meth: methods;
+
   constructor (meth: methods) {
     this.meth = meth;
     this.openListener();
@@ -65,7 +67,7 @@ class PopupConnector {
         this.meth.setActiveAccountWithoutUrl(data["index"]);
         break;
       case "setAction":
-        this.meth.setAction(data["action"], data["data"]);
+        this.meth.setAction(data as Action);
         break;
       case "showManager":
         this.meth.openManager();

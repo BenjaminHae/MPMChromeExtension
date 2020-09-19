@@ -6,6 +6,7 @@ import BackendGateway from './BackendGateway';
 import AccountManager from './AccountManager';
 import ContextMenu from './ContextMenu';
 import Settings from '../shared/Settings';
+import Action from '../models/Action';
 //todo
 // context
 //   contextEntries
@@ -34,6 +35,7 @@ import Settings from '../shared/Settings';
 
 class DummyMethods {
   private tabs?: TabConnector;
+  private action?: Action;
 
   constructor (private backend: BackendGateway, private accounts: AccountManager, private settings: Settings) {
   }
@@ -61,8 +63,10 @@ class DummyMethods {
   getLastError(): string {
     return "";
   }
-  getLatestAction(): object {
-    return {request: "hi"}
+  getLatestAction(): Action {
+    let action = this.action;
+    this.action = undefined;
+    return action;
   }
   setActiveAccount(index: number, url: string): void {
     //Todo filter for url
@@ -71,7 +75,8 @@ class DummyMethods {
   setActiveAccountWithoutUrl(index: number): void {
     this.accounts.selectAccount(index);
   }
-  setAction(action: string, data: object): void {
+  setAction(action: Action): void {
+    this.action = action;
   }
   async setUserSession(username: string, key: any): Promise<void> {
     await this.backend.setUserSession(username, key);

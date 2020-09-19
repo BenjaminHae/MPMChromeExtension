@@ -1,10 +1,16 @@
 import ExtensionConnector from './ExtensionConnector';
 import IFrameConnector from './IFrameConnector';
 import { ICredentialProvider } from '../backend/controller/credentialProvider';
+import { Account } from '../backend/models/account';
+import Action from '../models/Action';
 
 interface IPluginSystem {
   backendLogin(credentialProvider: ICredentialProvider, username?: string): void;
+  backendLogout(): void;
   registerPlugin(plugin: any): void;
+  getAccountByIndex(index:number): Account;
+  UIeditAccountSelect(account: Account): void;
+  UIaddAccountSelect(proposals: {[index: string]:string}): void;
 }
 
 interface WindowWithPluginSystem { pluginSystem: IPluginSystem; }
@@ -51,6 +57,14 @@ document.addEventListener('MPMExtensionEventToContentScript', async (e: CustomEv
           iframeConnector.retreiveSession();//todo add random identifier that is then sent back
         }
         break;
+      case "accountViewReady":
+        let action: Action;
+        if (action = await extensionConnector.getAction()) {
+          console.log("sending action to plugin");
+          console.log(action);
+          sendEvent("action", action);
+        }
+        break;
     }
   }, 
   false
@@ -70,6 +84,8 @@ executeScript(function() {
 
   class BrowserExtensionPlugin {
     private actionsReceived: boolean = false;
+    private accountsLoaded: boolean = false;
+    private action: Action;
 
     constructor(private pluginSystem: IPluginSystem) {
     }
@@ -91,10 +107,41 @@ executeScript(function() {
     // this callback reacts to accounts in backend being ready
     // it is possibly necessary to react to the "account view" being ready
     accountsReady() {
-        //perform actions
+      this.accountsLoaded = true;
+      if (this.actionsReceived) {
+        this.performAction();
+      }
+      this.sendEvent("accountViewReady");
     }
 
-    setAction(action: object) {
+    performAction() {
+      switch (this.action.action) {
+        case "logout": 
+          this.pluginSystem.backendLogout();
+          break;
+        case "edit": 
+          let account: Account;
+          if (account = this.pluginSystem.getAccountByIndex(this.action.data.index)) {
+            console.log(`found account by id ${account.index}`);
+            this.pluginSystem.UIeditAccountSelect(account);
+          }
+          else {
+            console.log("did not find account by id");
+            console.log(this.action);
+          }
+          break;
+        case "add":
+          this.pluginSystem.UIaddAccountSelect(this.action.data);
+          break;
+      }
+    }
+
+    setAction(action: Action) {
+      this.action = action;
+      this.actionsReceived = true;
+      if (this.accountsLoaded) {
+        this.performAction();
+      }
     }
 
     doLogin(username: string, key: CryptoKey) {
@@ -113,6 +160,9 @@ executeScript(function() {
       switch (e.detail.request) {
         case "session": 
           plugin.doLogin(e.detail.data.username, e.detail.data.key);
+          break;
+        case "action": 
+          plugin.setAction(e.detail.data);
           break;
       }
     }, 

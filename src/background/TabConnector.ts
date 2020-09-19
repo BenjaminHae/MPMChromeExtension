@@ -66,11 +66,9 @@ class TabConnector {
       case "login":  
         sendResponse({"request":"host", "data":{"available":this.meth.getLoggedIn()}}); 
         break;
-      case "actions": 
+      case "action": 
         var action = this.meth.getLatestAction();
-        if (action == null)
-          action = {request: "none"};
-        sendResponse(action);
+        sendResponse({"request":"action", "data": action});
         break;
       case "host": 
         sendResponse({"request":"host", "data":{"url":this.meth.getBackendHost()}}); 
