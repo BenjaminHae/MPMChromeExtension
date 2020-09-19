@@ -124,7 +124,7 @@ executeScript(function() {
     performAction() {
       switch (this.action.action) {
         case "logout": 
-          this.pluginSystem.backendLogout();
+          this.pluginSystem.logout();
           break;
         case "edit": 
           let account: Account;
