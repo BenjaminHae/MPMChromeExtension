@@ -18,24 +18,12 @@ interface WindowWithPluginSystem { pluginSystem: IPluginSystem; }
 let extensionConnector = new ExtensionConnector();
 
 // listen to:
-//   login done (fetch password)
-//   Logout
 //   selectAccount
-//   fetchActionsFromPlugin (when first view is ready, actions are executed either immediately, or when login is performed)
 
 // Actions:
-//   login (sending key from plugin)
-//   logout
-//   edit (sending in account id)
-//   addAccount (sending in account url)
 //   wrongHost?? Set Wrong host in content-script ?
-//   none (do nothing)
-// actionsfinished at the end
 
 // registered Events in MPM pluginSystem
-// preDataReady -> receive actions from extension
-// accountsReady -> retrieve secretkey for authenticating extension
-// preLogout -> dologout in extension
 // drawAccount -> add select in extension button
 
 function sendEvent(request: string, data?: object) {
@@ -82,97 +70,97 @@ function executeScript(script, args = null) {
 }
 
 executeScript(function() {
-  //Todo validate if this is the password-manager
-  let wrongHost = false;
-
-  class BrowserExtensionPlugin {
-    private actionsReceived: boolean = false;
-    private accountsLoaded: boolean = false;
-    private action: Action;
-
-    constructor(private pluginSystem: IPluginSystem) {
-    }
-
-    private sendEvent(request: string, data?: object) {
-      let evt = new CustomEvent('MPMExtensionEventToContentScript', {detail:{request: request, data: data}});
-      document.dispatchEvent(evt);
-    }
-    loginSuccessful(username: string, key: any): void {
-      console.log("login Successful");
-      this.sendEvent('loginSuccessful', {username: username, key: key});
-    }
-
-    loginViewReady() {
-      console.log("login view ready");
-      this.sendEvent('loginViewReady');
-    }
-
-    // this callback reacts to accounts in backend being ready
-    // it is possibly necessary to react to the "account view" being ready
-    accountsReady() {
-      this.accountsLoaded = true;
-      if (this.actionsReceived) {
-        this.performAction();
-      }
-      this.sendEvent("accountViewReady");
-    }
-
-    preLogout() {
-      this.sendEvent("logout");
-    }
-
-    performAction() {
-      switch (this.action.action) {
-        case "logout": 
-          this.pluginSystem.logout();
-          break;
-        case "edit": 
-          let account: Account;
-          if (account = this.pluginSystem.getAccountByIndex(this.action.data.index)) {
-            console.log(`found account by id ${account.index}`);
-            this.pluginSystem.UIeditAccountSelect(account);
-          }
-          else {
-            console.log("did not find account by id");
-            console.log(this.action);
-          }
-          break;
-        case "add":
-          this.pluginSystem.UIaddAccountSelect(this.action.data);
-          break;
-      }
-    }
-
-    setAction(action: Action) {
-      this.action = action;
-      this.actionsReceived = true;
-      if (this.accountsLoaded) {
-        this.performAction();
-      }
-    }
-
-    doLogin(username: string, key: CryptoKey) {
-      let credentials = {
-        getKey: () => key,
-        cleanUp: () => Promise.resolve()
-      };
-      this.pluginSystem.backendLogin(credentials);
-    }
-  }
   const pluginSystem = ((window as unknown) as WindowWithPluginSystem).pluginSystem
-  const plugin = new BrowserExtensionPlugin(pluginSystem);
-  pluginSystem.registerPlugin(plugin);
-  document.addEventListener('MPMExtensionEventToPlugin', (e: CustomEvent) => {
-      console.log(e);
-      switch (e.detail.request) {
-        case "session": 
-          plugin.doLogin(e.detail.data.username, e.detail.data.key);
-          break;
-        case "action": 
-          plugin.setAction(e.detail.data);
-          break;
+  // todo maybe check something else to find out whether this is the correct password manager instance (but this should also be checked in background)
+  if (pluginSystem) {
+    class BrowserExtensionPlugin {
+      private actionsReceived: boolean = false;
+      private accountsLoaded: boolean = false;
+      private action: Action;
+
+      constructor(private pluginSystem: IPluginSystem) {
       }
-    }, 
-    false);
+
+      private sendEvent(request: string, data?: object) {
+        let evt = new CustomEvent('MPMExtensionEventToContentScript', {detail:{request: request, data: data}});
+        document.dispatchEvent(evt);
+      }
+      loginSuccessful(username: string, key: any): void {
+        console.log("login Successful");
+        this.sendEvent('loginSuccessful', {username: username, key: key});
+      }
+
+      loginViewReady() {
+        console.log("login view ready");
+        this.sendEvent('loginViewReady');
+      }
+
+      // this callback reacts to accounts in backend being ready
+      // it is possibly necessary to react to the "account view" being ready
+      accountsReady() {
+        this.accountsLoaded = true;
+        if (this.actionsReceived) {
+          this.performAction();
+        }
+        this.sendEvent("accountViewReady");
+      }
+
+      preLogout() {
+        this.sendEvent("logout");
+      }
+
+      performAction() {
+        switch (this.action.action) {
+          case "logout": 
+            this.pluginSystem.logout();
+            break;
+          case "edit": 
+            let account: Account;
+            if (account = this.pluginSystem.getAccountByIndex(this.action.data.index)) {
+              console.log(`found account by id ${account.index}`);
+              this.pluginSystem.UIeditAccountSelect(account);
+            }
+            else {
+              console.log("did not find account by id");
+              console.log(this.action);
+            }
+            break;
+          case "add":
+            this.pluginSystem.UIaddAccountSelect(this.action.data);
+            break;
+        }
+      }
+
+      setAction(action: Action) {
+        this.action = action;
+        this.actionsReceived = true;
+        if (this.accountsLoaded) {
+          this.performAction();
+        }
+      }
+
+      doLogin(username: string, key: CryptoKey) {
+        let credentials = {
+          getKey: () => key,
+          cleanUp: () => Promise.resolve()
+        };
+        this.pluginSystem.backendLogin(credentials);
+      }
+    }
+    const plugin = new BrowserExtensionPlugin(pluginSystem);
+    pluginSystem.registerPlugin(plugin);
+    document.addEventListener('MPMExtensionEventToPlugin', (e: CustomEvent) => {
+        console.log(e);
+        switch (e.detail.request) {
+          case "session": 
+            plugin.doLogin(e.detail.data.username, e.detail.data.key);
+            break;
+          case "action": 
+            plugin.setAction(e.detail.data);
+            break;
+        }
+      }, 
+      false);
+  }
 });
 
