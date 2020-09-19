@@ -82,14 +82,14 @@ class TabConnector {
     }
   }
   insertTextIntoSelectedInput(text: string, frameId: number = 0) {
-    this.executeScript(function (text) {
+    this.executeScript(function (text: string) {
         const input = document.activeElement as HTMLInputElement;
         input.value = text;
         input.dispatchEvent(new Event('change'));
         }, text, frameId);
   }
   async insertTextIntoAdjacentPassword(text: string, frameId: number = 0) {
-    this.executeScript(function (text) {
+    this.executeScript(function (text: string) {
         const selected = document.activeElement as HTMLInputElement;
         const form = selected.closest("form");
         const input = form.querySelectorAll("input[type=password]")[0] as HTMLInputElement;
@@ -99,7 +99,7 @@ class TabConnector {
     return new Promise(resolve => setTimeout(resolve, 250));
   }
   async submitClosestForm(frameId: number = 0) {
-    this.executeScript(function (text) {
+    this.executeScript(function (text: string) {
         const selected = document.activeElement as HTMLInputElement;
         const form = selected.closest("form");
         const buttons = form.querySelectorAll("input[type=submit]");

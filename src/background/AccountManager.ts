@@ -22,11 +22,11 @@ class AccountManager {
     }
   }
 
-  getActiveAccountIndex(): number {
+  getActiveAccountIndex(): number | undefined {
     return this.activeAccountIndex;
   }
 
-  getAccountForURL(url: string): SparseAccount | null {
+  getAccountForURL(url: string): SparseAccount | undefined {
     return this.getAccountsForURL(url).find((account) => account.active);
   }
 

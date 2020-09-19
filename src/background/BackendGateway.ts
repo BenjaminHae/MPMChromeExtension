@@ -15,26 +15,29 @@ import { AccountsApi as OpenAPIAccountsService } from '@pm-server/pm-server-reac
 import SparseAccount from '../models/SparseAccount';
 
 class KeyCredentialProvider {
-  key: CryptoKey;
+  key?: CryptoKey;
   constructor (key: CryptoKey) {
     this.key = key;
   }
   getKey(): CryptoKey {
-    return this.key;
+    if (this.key) {
+      return this.key;
+    }
+    throw new Error("Key is not present");
   }
 
   cleanUp(): Promise<void> {
-    this.key = null;
+    this.key = undefined;
     return Promise.resolve();
   }
 }
 
 class BackendGateway {
-  authenticated: boolean;
-  accountsReady: boolean;
-  username: string;
+  authenticated: boolean = false;
+  accountsReady: boolean = false;
+  username: string = "";
   private backend: BackendService;
-  private credentials: {username: string, key:any};
+  private credentials?: {username: string, key:any};
 
   constructor (private host: string) {
     this.cleanup();
@@ -104,6 +107,12 @@ class BackendGateway {
 
   getAccounts(): Array<Account> {
     return this.backend.accounts;
+  }
+
+  async logout(): void {
+    await this.backend.logout();
+    this.cleanup();
+    this.initBackend();
   }
 
 }

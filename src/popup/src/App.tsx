@@ -130,7 +130,7 @@ export default class App extends React.Component<{}, AppState> {
             <Authenticated
               username={this.state.username || ""}
               accounts={this.state.accounts || []}
-              logoutHandler={()=>{}}
+              logoutHandler={()=>{this.sendBackgroundRequest("logout")}}
               showManagerHandler={()=>{this.openHost()}}
               showOptionsHandler={this.showOptions.bind(this)}
               addAccountHandler={()=>{this.openHostWithActions([{action: "add", data: {url: this.state.currentUrl}}])}}

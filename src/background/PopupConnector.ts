@@ -12,6 +12,7 @@ interface methods {
   getPasswordByAccountIndex: (index: number) => Promise<string>;
   setAction: (action: Action) => void;
   openManager: () => void;
+  logout: () => void;
 }
 class PopupConnector {
   private meth: methods;
@@ -71,6 +72,9 @@ class PopupConnector {
         break;
       case "showManager":
         this.meth.openManager();
+        break;
+      case "logout":
+        this.meth.logout();
         break;
       case "copyPassword":
         this.meth.getPasswordByAccountIndex(data["index"])

@@ -85,6 +85,7 @@ class DummyMethods {
     return this.backend.getUserSession();
   }
   logout(): void {
+    return this.backend.logout();
   }
   loadSettings(): void {
     console.log("reloading settings");

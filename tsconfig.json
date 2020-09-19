@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "strict": false,
     "target": "es6",
     "module": "esnext",
     "sourceMap": false,
