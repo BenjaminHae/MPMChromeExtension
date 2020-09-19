@@ -149,7 +149,7 @@ executeScript(function() {
         getKey: () => key,
         cleanUp: () => Promise.resolve()
       };
-      this.pluginSystem.backendLogin(credentials, username);
+      this.pluginSystem.backendLogin(credentials);
     }
   }
   const pluginSystem = ((window as unknown) as WindowWithPluginSystem).pluginSystem
