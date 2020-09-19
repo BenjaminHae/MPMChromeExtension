@@ -6,7 +6,7 @@ import Action from '../models/Action';
 
 interface IPluginSystem {
   backendLogin(credentialProvider: ICredentialProvider, username?: string): void;
-  backendLogout(): void;
+  logout(): void;
   registerPlugin(plugin: any): void;
   getAccountByIndex(index:number): Account;
   UIeditAccountSelect(account: Account): void;
