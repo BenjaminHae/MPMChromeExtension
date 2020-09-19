@@ -13,6 +13,7 @@ import { MaintenanceApi as OpenAPIMaintenanceService } from '@pm-server/pm-serve
 import { UserApi as OpenAPIUserService } from '@pm-server/pm-server-react-client';
 import { AccountsApi as OpenAPIAccountsService } from '@pm-server/pm-server-react-client';
 import SparseAccount from '../models/SparseAccount';
+import { Observable, Subscriber, TeardownLogic } from 'rxjs';
 
 class KeyCredentialProvider {
   key?: CryptoKey;
@@ -31,6 +32,19 @@ class KeyCredentialProvider {
     return Promise.resolve();
   }
 }
+function subscriptionCreator<T>(list: Array<Subscriber<T>>): (s: Subscriber<T>) => TeardownLogic {
+    return (observer: Subscriber<T>) => {
+      list.push(observer);
+      return {
+        unsubscribe() {
+          list.splice(list.indexOf(observer), 1);
+        }
+      }
+    };
+}
+function subscriptionExecutor<T>(list: Array<Subscriber<T>>, params?:T) {
+  list.forEach(obs => obs.next(params));
+}
 
 class BackendGateway {
   authenticated: boolean = false;
@@ -38,6 +52,8 @@ class BackendGateway {
   username: string = "";
   private backend: BackendService;
   private credentials?: {username: string, key:any};
+  private authenticationObservers: Array<Subscriber<boolean>> = [];
+  authenticationObservable = new Observable<boolean>(subscriptionCreator(this.authenticationObservers));
 
   constructor (private host: string) {
     this.cleanup();
@@ -61,6 +77,7 @@ class BackendGateway {
       .subscribe(()=>{
           console.log('logged in');
           this.authenticated = true;
+          subscriptionExecutor<boolean>(this.authenticationObservers, true);
           });
     this.backend.accountsObservable
       .subscribe((accounts: Array<Account>) => {
@@ -112,6 +129,7 @@ class BackendGateway {
   async logout(): Promise<void> {
     await this.backend.logout();
     this.cleanup();
+    subscriptionExecutor<boolean>(this.authenticationObservers, false);
     this.initBackend();
   }
 
