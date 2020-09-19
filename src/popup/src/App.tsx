@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import Authenticated from './components/Authenticated/Authenticated';
+import Message from './components/Message/Message';
 import SparseAccount from '../../models/SparseAccount';
 import Action from '../../models/Action';
 import Container from 'react-bootstrap/Container';
@@ -16,6 +17,7 @@ interface AppState {
   selectedAccount?: number;//ToDo set for AccountList
   host: string;
   currentUrl: string;
+  message?: string;
 }
 
 export default class App extends React.Component<{}, AppState> {
@@ -41,7 +43,7 @@ export default class App extends React.Component<{}, AppState> {
         case "LoggedIn": this.showLoggedIn(request["data"]["loggedIn"], request["data"]["username"]); break;
         case "AvailableAccounts": this.showAvailableAccounts(request["data"]["accounts"],request["data"]["url"]); break;
         case "Host": this.setHost(request["data"]["url"]); break;
-        case "copyPassword": navigator.clipboard.writeText(request["data"]["text"]); break;
+        case "copyPassword": navigator.clipboard.writeText(request["data"]["text"]); this.showMessage("Password copied to clipboard"); break;
       }
     });
     this.sendBackgroundRequest('Host');
@@ -114,6 +116,11 @@ export default class App extends React.Component<{}, AppState> {
     this.openHostWithActions([]);
   }
 
+  showMessage(message: string) {
+    this.setState({message: message});
+    setTimeout(()=>{this.setState({message:undefined})},3000);
+  }
+
   showOptions() {
     chrome.runtime.openOptionsPage();
   }
@@ -140,6 +147,11 @@ export default class App extends React.Component<{}, AppState> {
             />
           } 
           </Row>
+          {this.state.message &&
+          <Row style={ {marginTop: "0.5em"} }>
+            <Message message={this.state.message} />
+          </Row>
+          }
         </Container>
       </div>
     );
