@@ -65,6 +65,9 @@ document.addEventListener('MPMExtensionEventToContentScript', async (e: CustomEv
           sendEvent("action", action);
         }
         break;
+      case "logout":
+        extensionConnector.logout();
+        break;
     }
   }, 
   false
@@ -112,6 +115,10 @@ executeScript(function() {
         this.performAction();
       }
       this.sendEvent("accountViewReady");
+    }
+
+    preLogout() {
+      this.sendEvent("logout");
     }
 
     performAction() {

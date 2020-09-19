@@ -84,8 +84,12 @@ class DummyMethods {
   getUserSession(): {username: string, key:any} {
     return this.backend.getUserSession();
   }
-  logout(): void {
-    return this.backend.logout();
+  async logout(): Promise<void> {
+    await this.backend.logout();
+  }
+  logoutPage(): void {
+    this.action = { action: "logout", data: {} };
+    this.openManager();
   }
   loadSettings(): void {
     console.log("reloading settings");

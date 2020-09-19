@@ -109,7 +109,7 @@ class BackendGateway {
     return this.backend.accounts;
   }
 
-  async logout(): void {
+  async logout(): Promise<void> {
     await this.backend.logout();
     this.cleanup();
     this.initBackend();
