@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build:contentscript-background": "NODE_ENV=production webpack --config webpack.config.js",
-    "build": "npm run build:popup && npm run build:contentscript-background",
+    "build:nopopup": "NODE_ENV=production webpack --config webpack.config.js",
+    "build": "npm run build:popup && npm run build:nopopup",
     "build:popup": "INLINE_RUNTIME_CHUNK=false npm run build --prefix src/popup && cd src/popup/build && cpy * /static/* ../../../dist/popup --parents",
     "clean": "rm -rf dist && cpy manifest.json dist && cpy src/assets/* dist/assets",
     "prebuild": "npm run clean",
