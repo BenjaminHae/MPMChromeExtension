@@ -2,6 +2,8 @@ import React from 'react';
 import { Plus, BoxArrowLeft, List, Sliders } from 'react-bootstrap-icons';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 interface ActionButtonsProps {
   logoutHandler: () => void;
@@ -10,35 +12,39 @@ interface ActionButtonsProps {
   addAccountHandler: () => void;// not sure if url is necessary
 }
 
-const ActionButtons: React.FC<ActionButtonsProps> = (props: ActionButtonsProps) => (
+const renderTooltip = (tip: string, id: string) => (
+    <Tooltip id={id}>{tip}</Tooltip>
+  );
+
+const ActionButtons: React.FC<ActionButtonsProps> = (props: ActionButtonsProps) => {
+  const buttons = [
+    {tooltipId: "ttShow", tooltip: "Show Password Manager", variant: "primary", onClick: () => props.showManagerHandler(), icon: (<List/>)},
+    {tooltipId: "ttOpt", tooltip: "Show Extension Options", variant: "dark", onClick: () => props.showOptionsHandler(), icon: (<Sliders/>)},
+    {tooltipId: "ttAdd", tooltip: "Add New Account", variant: "success", onClick: () => props.addAccountHandler(), icon: (<Plus/>)},
+    {tooltipId: "ttLogout", tooltip: "Logout", variant: "danger", onClick: () => props.logoutHandler(), icon: (<BoxArrowLeft/>)}
+  ]
+  const renderedButtons = buttons.map((button) => (
+      <OverlayTrigger
+        placement="bottom"
+        delay={{ show: 250, hide: 400 }}
+        overlay={renderTooltip(button.tooltip, button.tooltipId)}
+        key={button.tooltipId}
+        >
+        <Button 
+          variant={button.variant}
+          aria-label={button.tooltip}
+          onClick={button.onClick} >
+          {button.icon}
+        </Button>
+      </OverlayTrigger>
+    ))
+  return (
   <div>
     <ButtonGroup size="sm" className="float-right">
-      <Button 
-        variant="primary"
-        aria-label="Show Password Manager"
-        onClick={() => props.showManagerHandler()} >
-        <List/>
-      </Button>
-      <Button 
-        variant="dark"
-        aria-label="Show Extension Options"
-        onClick={() => props.showOptionsHandler()} >
-        <Sliders/>
-      </Button>
-      <Button 
-        variant="success"
-        aria-label="Add New Account"
-        onClick={() => props.addAccountHandler()} >
-        <Plus/>
-      </Button>
-      <Button 
-        variant="danger"
-        aria-label="Logout"
-        onClick={() => props.logoutHandler()} >
-        <BoxArrowLeft/>
-      </Button>
+      {renderedButtons}
     </ButtonGroup>
   </div>
-);
+  );
+}
 
 export default ActionButtons;
