@@ -1,4 +1,5 @@
 import Settings from '../shared/Settings';
+import createElement from '../shared/CreateHTMLElement';
 
 function loadData(items) {
   console.log(items);
@@ -9,16 +10,6 @@ async function storeData() {
   await settings.store();
   chrome.runtime.sendMessage({"request":"reloadSettings"}, function(response) {}); 
   document.getElementById('status').textContent = 'Options saved.';
-}
-function createElement<T = HTMLElement>(elementType, attributes: { [key: string] : string }, textContent?: string): T {
-  let element = document.createElement(elementType);
-  for (let key in attributes) {
-    element.setAttribute(key, attributes[key]); 
-  }
-  if (textContent) {
-    element.textContent = textContent; 
-  }
-  return element;
 }
 function createHTML() {
   document.body.appendChild(createElement('label', {'for': 'url'}, 'Password-Manager URL:'));
