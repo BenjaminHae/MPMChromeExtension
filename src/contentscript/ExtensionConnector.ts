@@ -1,12 +1,8 @@
 import Action from '../models/Action';
 
 class ExtensionConnector {
-
-  constructor () {
-  }
   async getAction(): Promise<Action | undefined> {
     let response = await this.sendMessageToExtension("action");
-    console.log(response);
     if (response.data)
       return response.data as Action
     return undefined;
@@ -24,6 +20,11 @@ class ExtensionConnector {
   async getHost():Promise<string> {
     let response = await this.sendMessageToExtension("host");
     return response.data["url"];
+  }
+
+  async getHostMatches():Promise<boolean> {
+    let response = await this.sendMessageToExtension("hostMatches");
+    return response.data["match"];
   }
 
   private sendMessageToExtension(request: string, message: {} = {}):Promise<any> {
