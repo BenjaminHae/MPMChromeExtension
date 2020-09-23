@@ -24,37 +24,32 @@ class TabConnector {
   }
 
   validateSender(sender): boolean {
-    if (sender["id"] === chrome.runtime.id) {
-      return true;
+    if (sender["id"] !== chrome.runtime.id) {
+      return false;
     }
-    else if (sender["url"].startsWith("chrome-extension://" + chrome.runtime.id + '/')){
-      return true;
+    const host = this.meth.getBackendHost();
+    const optionsUrl = "chrome-extension://" + chrome.runtime.id;
+    if (!(sender["url"].startsWith(optionsUrl + "/") || sender["url"].startsWith(host + "/" ))) {
+      return false;
     }
-    else if (sender["url"].startsWith(this.meth.getBackendHost())) {
-      return true;
+    else if (!(sender["origin"] === (host) || sender["origin"] === optionsUrl)) {
+      return false;
     }
-    return false;
+    return true;
   }
 
   openListener() {
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       if (!this.validateSender(sender)) {
-        console.log("wrong host");
-        if (message["request"] == "actions") {
-          let action = {"request": "wrongHost"};
-          sendResponse(action);
+        if (message["request"] == "hostMatches") {
+          sendResponse({request: "hostMatches", data: { match: false }});
         }
         return;
       }
       if (message["origin"] !== this.meth.getBackendHost()) {
         console.log(`origin check failed, origin: ${message["origin"]} host: ${this.meth.getBackendHost()}`);
-        if (message["request"] == "actions") {
-          let action = {"request": "wrongHost"};
-          sendResponse(action);
-        }
         return;
       }
-      console.log(sender + " connected .....");
       this.handleTabRequest(message["request"], message["data"], sendResponse);
     });
   }
@@ -72,6 +67,9 @@ class TabConnector {
         break;
       case "host": 
         sendResponse({"request":"host", "data":{"url":this.meth.getBackendHost()}}); 
+        break;
+      case "hostMatches":
+        sendResponse({request: "hostMatches", data: { match: true }});
         break;
       case "reloadSettings": 
         this.meth.loadSettings(); 
