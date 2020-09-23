@@ -29,13 +29,11 @@ class IFrameConnector {
   }
 
   openListener() {
-    console.log("Adding IFrameListener");
     window.addEventListener('message',(event) => {
       if (!this.validateSender(event)) {
         console.log(`wrong host: ${event}`);
         return;
       }
-      console.log("received message from iframe" );
       this.handleFrameRequest(event.data["request"], event.data["data"], event.source);
     });
   }
