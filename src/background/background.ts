@@ -73,7 +73,7 @@ class DummyMethods {
     this.accounts.selectAccount(index);
   }
   setActiveAccountWithoutUrl(index: number): void {
-    this.accounts.selectAccount(index);
+    this.accounts.selectAccount(index, true);
   }
   setAction(action: Action): void {
     this.action = action;
