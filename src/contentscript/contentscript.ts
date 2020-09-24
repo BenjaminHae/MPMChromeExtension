@@ -56,6 +56,9 @@ document.addEventListener('MPMExtensionEventToContentScript', async (e: CustomEv
           sendEvent("action", action);
         }
         break;
+      case "accountReload":
+        extensionConnector.reloadAccounts();
+        break;
       case "selectAccount":
         extensionConnector.selectAccount(e.detail.data.index);
         break;

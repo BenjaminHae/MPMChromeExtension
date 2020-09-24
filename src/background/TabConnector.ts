@@ -8,6 +8,7 @@ interface methods {
   getLatestAction: () => any;
   loadSettings: () => any;
   setActiveAccountWithoutUrl: (index: number) => void;
+  reloadAccounts: () => void;
 }
 class TabConnector {
   private meth: methods;
@@ -73,6 +74,9 @@ class TabConnector {
         break;
       case "reloadSettings": 
         this.meth.loadSettings(); 
+        break;
+      case "reloadAccounts": 
+        this.meth.reloadAccounts(); 
         break;
       case "selectAccount": 
         this.meth.setActiveAccountWithoutUrl(data["index"]); 

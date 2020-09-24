@@ -17,6 +17,9 @@ class ExtensionConnector {
   logout() {
     this.sendMessageToExtensionWithoutResponse("logout");
   }
+  reloadAccounts() {
+    this.sendMessageToExtensionWithoutResponse("reloadAccounts");
+  }
   async getHost():Promise<string> {
     let response = await this.sendMessageToExtension("host");
     return response.data["url"];

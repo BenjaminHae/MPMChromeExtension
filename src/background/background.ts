@@ -95,6 +95,9 @@ class DummyMethods {
     console.log("reloading settings");
     settings.load();
   }
+  reloadAccounts(): void {
+    this.backend.reloadAccounts();
+  }
   openManager(): void {
     this.tabs.openManager();
   }

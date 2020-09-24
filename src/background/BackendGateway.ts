@@ -126,6 +126,10 @@ class BackendGateway {
     return this.backend.accounts;
   }
 
+  reloadAccounts(): void {
+    this.backend.loadAccounts();
+  }
+
   async logout(): Promise<void> {
     await this.backend.logout();
     this.cleanup();
