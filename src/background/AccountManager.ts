@@ -41,7 +41,7 @@ class AccountManager {
     }
     accounts = accounts.concat(this.backend.getAccounts().filter(
         (account) =>
-        account.other["url"].startsWith(url)
+        account.other["url"] && account.other["url"].trim() !== "" && url.startsWith(account.other["url"])
       )
       .map(
         (account) =>
