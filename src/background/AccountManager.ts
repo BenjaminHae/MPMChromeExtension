@@ -35,18 +35,31 @@ class AccountManager {
       return []
     }
     let accounts: Array<SparseAccount> = [];
+    let alreadySelected: number | undefined = undefined;
     if (this.activeAccountForced && this.activeAccountIndex) {
       accounts.push(this.accountToSparseAccount(this.backend.getAccountByIndex(this.activeAccountIndex)));
       accounts[0].active = true;
+      alreadySelected = this.activeAccountIndex;
     }
-    accounts = accounts.concat(this.backend.getAccounts().filter(
+    accounts = accounts.concat(
+      // filter accounts for matching url
+      this.backend.getAccounts().filter(
         (account) =>
         account.other["url"] && account.other["url"].trim() !== "" && url.startsWith(account.other["url"])
+      )
+      // remove account that is already selected by activeAccountIndex
+      .filter(
+        (account) =>
+        account.index !== alreadySelected
       )
       .map(
         (account) =>
         this.accountToSparseAccount(account)
-      ));
+      ))
+      .sort(
+        (account1, account2) =>
+        account1.index - account2.index
+      );
     if (accounts.length > 0 && !accounts.find((account) => account.active)) {
       accounts[0].active = true;
     }
