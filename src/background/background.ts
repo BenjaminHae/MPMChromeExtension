@@ -103,6 +103,9 @@ class DummyMethods {
   }
 }
 
+//Logged out on startup
+chrome.browserAction.setIcon({ path: "assets/iconLoggedOut.png" });
+
 let settings = new Settings();
 let backend = new BackendGateway("");
 backend.authenticationObservable
