@@ -12,6 +12,7 @@ interface methods {
   getPasswordByAccountIndex: (index: number) => Promise<string>;
   setAction: (action: Action) => void;
   openManager: () => void;
+  openManagerForLogin: () => void;
   logoutPage: () => void;
 }
 class PopupConnector {
@@ -72,6 +73,9 @@ class PopupConnector {
         break;
       case "showManager":
         this.meth.openManager();
+        break;
+      case "showManagerForLogin":
+        this.meth.openManagerForLogin();
         break;
       case "logout":
         this.meth.logoutPage();

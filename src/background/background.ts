@@ -101,6 +101,9 @@ class DummyMethods {
   openManager(): void {
     this.tabs.openManager();
   }
+  openManagerForLogin(): void {
+    this.tabs.openManager(true);
+  }
 }
 
 //Logged out on startup

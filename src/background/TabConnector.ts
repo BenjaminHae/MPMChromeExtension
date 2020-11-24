@@ -17,10 +17,13 @@ class TabConnector {
     this.openListener();
   }
 
-  openManager() {
-    const host = this.meth.getBackendHost();
-    if (host !== "") {
-      chrome.tabs.create({url: host});
+  openManager(autoLogin: boolean = false) {
+    let url = this.meth.getBackendHost();
+    if (url !== "") {
+      if (!autoLogin) {
+        url += '?noAutoLogin';
+      }
+      chrome.tabs.create({url: url});
     }
   }
 

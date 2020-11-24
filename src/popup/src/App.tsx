@@ -64,7 +64,7 @@ export default class App extends React.Component<{}, AppState> {
     if(!this.state.authenticated) {
       if (this.state.host !== "") {
         console.log("not logged in should open manager");
-        this.openHost();
+        this.openHostForLogin();
       }
     }
   }
@@ -111,11 +111,15 @@ export default class App extends React.Component<{}, AppState> {
       this.sendBackgroundRequest("showManager");
     }
   }
-  
+
   openHost() {
     this.openHostWithActions([]);
   }
 
+  openHostForLogin() {
+    this.sendBackgroundRequest("showManagerForLogin");
+  }
+  
   showMessage(message: string) {
     this.setState({message: message});
     setTimeout(()=>{this.setState({message:undefined})},3000);
