@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import Authenticated from './components/Authenticated/Authenticated';
 import Message from './components/Message/Message';
 import SparseAccount from '../../models/SparseAccount';
