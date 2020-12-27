@@ -32,10 +32,14 @@ jobs:
         working-directory: .
       - run: npm install
         working-directory: ./src/popup
-      - run: npm run build && npm run zip
+      - run: npm run clean && npm run build && npm run zip
         working-directory: .
         #env:
         #  CI: ""
+      
+      - name: generate crx file
+        run: ./crxmake.sh dist <(${{ secrets.EXTENSION_SIGNING_KEY }}) && ls -la
+        working-directory: .
   #RELEASE
       - name: generate release name
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
