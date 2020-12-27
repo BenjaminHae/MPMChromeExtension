@@ -37,8 +37,12 @@ jobs:
         #env:
         #  CI: ""
       
+      - name: get private key for signing extension
+        run: 'echo "${KEY}" > key.pem'
+        env:
+          KEY: ${{ secrets.EXTENSION_SIGNING_KEY }}
       - name: generate crx file
-        run: ./crxmake.sh dist <(${{ secrets.EXTENSION_SIGNING_KEY }}) && ls -la
+        run: ./crxmake.sh dist key.pem && ls -la
         working-directory: .
   #RELEASE
       - name: generate release name
