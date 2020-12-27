@@ -23,6 +23,8 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - run: npm install
         working-directory: .
+      - run: npm install
+        working-directory: ./src/popup
       - run: npm run build && npm run zip
         working-directory: .
         #env:
