@@ -1,8 +1,8 @@
 name: build extension and create release
-on: #[push]
-  push:
-    tags:
-      - 'v*'
+on: [push]
+  #push:
+  #  tags:
+  #    - 'v*'
 jobs:
   build_and_release:
     name: build extension and create release
@@ -42,33 +42,33 @@ jobs:
         env:
           KEY: ${{ secrets.EXTENSION_SIGNING_KEY }}
       - name: generate crx file
-        run: ./crxmake.sh dist key.pem && mv dist.crx password-manager-extension.crx
+        run: npx crx3 --key key.pem -o password-manager-extension.crx dist && ls -la
         working-directory: .
   #RELEASE
-      - name: generate release name
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - name: generate release version
-        run: "grep '\"version\"' dist/manifest.json | sed 's/^.*: \"/EXT_VERSION=/; s/\",\\s*$//' >> $GITHUB_ENV"
-      - name: check if version matches
-        run: "echo \"Release Name: ${{ env.RELEASE_VERSION }}\"; echo \"Extension Version v${{ env.EXT_VERSION }}\";[[ \"${{ env.RELEASE_VERSION }}\" == \"v${{ env.EXT_VERSION }}\" ]]"
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ env.RELEASE_VERSION }}
-          release_name: ${{ env.RELEASE_VERSION }}
-          body: ${{ github.event.head_commit.message }}
-          draft: true
-          prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
-      - name: Upload Release Artifact
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./password-manager-extension.crx
-          asset_name: password-manager-extension.crx
-          asset_content_type: application/x-chrome-extension
+   #   - name: generate release name
+   #     run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+   #   - name: generate release version
+   #     run: "grep '\"version\"' dist/manifest.json | sed 's/^.*: \"/EXT_VERSION=/; s/\",\\s*$//' >> $GITHUB_ENV"
+   #   - name: check if version matches
+   #     run: "echo \"Release Name: ${{ env.RELEASE_VERSION }}\"; echo \"Extension Version v${{ env.EXT_VERSION }}\";[[ \"${{ env.RELEASE_VERSION }}\" == \"v${{ env.EXT_VERSION }}\" ]]"
+   #   - name: Create Release
+   #     id: create_release
+   #     uses: actions/create-release@v1
+   #     env:
+   #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   #     with:
+   #       tag_name: ${{ env.RELEASE_VERSION }}
+   #       release_name: ${{ env.RELEASE_VERSION }}
+   #       body: ${{ github.event.head_commit.message }}
+   #       draft: true
+   #       prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
+   #   - name: Upload Release Artifact
+   #     id: upload-release-asset 
+   #     uses: actions/upload-release-asset@v1
+   #     env:
+   #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+   #     with:
+   #       upload_url: ${{ steps.create_release.outputs.upload_url }}
+   #       asset_path: ./password-manager-extension.crx
+   #       asset_name: password-manager-extension.crx
+   #       asset_content_type: application/x-chrome-extension
