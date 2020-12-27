@@ -36,7 +36,7 @@ jobs:
         working-directory: .
         #env:
         #  CI: ""
-      
+
       - name: get private key for signing extension
         run: 'echo "${KEY}" > key.pem'
         env:
@@ -47,8 +47,10 @@ jobs:
   #RELEASE
       - name: generate release name
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: generate release version
+        run: echo "EXT_VERSION=(grep '\"version\"' dist/manifest.json | sed 's/^.*: \"//; s/\",\s*$//')" >> $GITHUB_ENV
       - name: check if version matches
-        run: "VERSION=$(grep '\"version\"' dist/manifest.json | sed 's/^.*: \"//; s/\",\s*$//'); echo \"Release Name: ${{ env.RELEASE_VERSION }}\"; echo \"Extension Version v${VERSION}\";[[ \"${{ env.RELEASE_VERSION}}\" == \"v${VERSION}\" ]]";
+        run: "echo \"Release Name: ${{ env.RELEASE_VERSION }}\"; echo \"Extension Version v${{ env.EXT_VERSION }}\";[[ \"${{ env.RELEASE_VERSION }}\" == \"v${{ env.EXT_VERSION }}\" ]]";
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
