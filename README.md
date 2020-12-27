@@ -5,4 +5,4 @@ This is the chrome extension for the [self-hosted password manager](https://gith
 ## Installation
 
 Currently this extension is not available in the chrome store.  
-You need to manually add the extension. Download the corresponding zip file from the releases of this repository.
+You need to manually add the extension. Download the corresponding crx file from the releases of this repository.
