@@ -1,8 +1,8 @@
 name: build extension and create release
-on: [push]
-  #push:
-  #  tags:
-  #    - 'v*'
+on: 
+  push:
+    tags:
+      - 'v*'
 jobs:
   build_and_release:
     name: build extension and create release
