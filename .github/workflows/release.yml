@@ -10,6 +10,11 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
+      - name: checkout API
+        uses: actions/checkout@v2
+        with:
+          repository: BenjaminHae/modern-password-manager
+          path: mpm
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
@@ -22,6 +27,8 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - run: npm install
+        working-directory: .
+      - run: npm link mpm/OpenAPIReactClient
         working-directory: .
       - run: npm install
         working-directory: ./src/popup
