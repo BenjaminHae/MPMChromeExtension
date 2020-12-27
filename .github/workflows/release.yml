@@ -22,7 +22,7 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - run: npm install
-        working-directory: ./reactClient/my-app/
+        working-directory: .
       - run: npm run build && npm run zip
         working-directory: .
         #env:
