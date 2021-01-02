@@ -8,7 +8,7 @@ function loadData(items) {
 async function storeData() {
   settings.settings.host = (document.getElementById('url') as HTMLInputElement).value; 
   await settings.store();
-  chrome.runtime.sendMessage({"request":"reloadSettings"}, function(response) {}); 
+  chrome.extension.getBackgroundPage().window.location.reload();
   document.getElementById('status').textContent = 'Options saved.';
 }
 function createHTML() {
