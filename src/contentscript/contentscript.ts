@@ -33,7 +33,7 @@ document.addEventListener('MPMExtensionEventToContentScript', async (e: CustomEv
       case "hostMatches":
         if (await extensionConnector.getHostMatches()) {
           sendEvent("hostMatches");
-          sendEvent("credentialsPresent", await extensionConnector.requestLogin());
+          sendEvent("credentialsPresent", { "present": await extensionConnector.requestLogin() });
         }
         break;
       case "loginViewReady":
@@ -96,7 +96,7 @@ executeScript(function() {
             plugin.setAction(e.detail.data);
             break;
           case "credentialsPresent":
-            plugin.setCredentialsPresent(e.detail.data);
+            plugin.setCredentialsPresent(e.detail.data.present);
             break;
         }
       }, 
