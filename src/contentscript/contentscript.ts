@@ -8,6 +8,7 @@ interface IBrowserExtensionPlugin {
   doLogin: (username: string, key: CryptoKey) => void;
   setAction: (action: Action) => void;
   setActive: () => void;
+  setCredentialsPresent: (value: boolean) => void;
 }
 
 interface WindowWithPluginSystem { browserExtensionPlugin?: IBrowserExtensionPlugin; }
@@ -32,6 +33,7 @@ document.addEventListener('MPMExtensionEventToContentScript', async (e: CustomEv
       case "hostMatches":
         if (await extensionConnector.getHostMatches()) {
           sendEvent("hostMatches");
+          sendEvent("credentialsPresent", await extensionConnector.requestLogin());
         }
         break;
       case "loginViewReady":
@@ -92,6 +94,9 @@ executeScript(function() {
             break;
           case "action": 
             plugin.setAction(e.detail.data);
+            break;
+          case "credentialsPresent":
+            plugin.setCredentialsPresent(e.detail.data);
             break;
         }
       }, 
