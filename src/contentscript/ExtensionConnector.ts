@@ -1,8 +1,7 @@
 import Action from '../models/Action';
 
 class ExtensionConnector {
-  credentialsPresent = false;
-  credentialsPresentFetched = false;
+  private credentialsPresent?: boolean;
 
   async getAction(): Promise<Action | undefined> {
     let response = await this.sendMessageToExtension("action");
@@ -14,9 +13,8 @@ class ExtensionConnector {
     this.sendMessageToExtensionWithoutResponse("selectAccount", {index: index});
   }
   async requestLogin(): Promise<boolean> {
-    if (!this.credentialsPresentFetched) {
+    if (this.credentialsPresent === undefined) {
       let response = await this.sendMessageToExtension("login");
-      this.credentialsPresentFetched = true;
       this.credentialsPresent = response.data["available"];
     }
     return this.credentialsPresent;
