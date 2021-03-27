@@ -17,7 +17,7 @@ class TabConnector {
     this.openListener();
   }
 
-  openManager(autoLogin: boolean = false) {
+  openManager(autoLogin: boolean = true) {
     let url = this.meth.getBackendHost();
     if (url !== "") {
       if (!autoLogin) {

@@ -89,7 +89,7 @@ class DummyMethods {
   }
   logoutPage(): void {
     this.action = { action: "logout", data: {} };
-    this.openManager();
+    this.openManagerForLogout();
   }
   loadSettings(): void {
     console.log("reloading settings");
@@ -101,8 +101,8 @@ class DummyMethods {
   openManager(): void {
     this.tabs.openManager();
   }
-  openManagerForLogin(): void {
-    this.tabs.openManager(true);
+  openManagerForLogout(): void {
+    this.tabs.openManager(false);
   }
 }
 
