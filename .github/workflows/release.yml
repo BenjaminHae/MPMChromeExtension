@@ -26,11 +26,11 @@ jobs:
         with:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - run: npm install
+      - run: npm ci
         working-directory: .
       - run: npm link mpm/OpenAPIReactClient
         working-directory: .
-      - run: npm install
+      - run: npm ci
         working-directory: ./src/popup
       - run: npm run clean && npm run build && npm run zip
         working-directory: .
