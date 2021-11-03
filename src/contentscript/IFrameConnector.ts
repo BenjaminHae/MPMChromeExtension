@@ -19,7 +19,7 @@ class IFrameConnector {
 
   createIFrame(): HTMLIFrameElement {
     let iframe = document.createElement('iframe') as HTMLIFrameElement;
-    iframe.setAttribute('src', chrome.extension.getURL('webaccessible/index.html'));
+    iframe.setAttribute('src', chrome.runtime.getURL('webaccessible/index.html'));
     document.body.appendChild(iframe);
     iframe.addEventListener("load", () => {
       this.iframeHasLoaded = true;
