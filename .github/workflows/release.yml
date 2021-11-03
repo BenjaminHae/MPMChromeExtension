@@ -19,7 +19,7 @@ jobs:
       - name: generate release name
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: generate release version
-        run: "grep '\"version\"' dist/manifest.json | sed 's/^.*: \"/EXT_VERSION=/; s/\",\\s*$//' >> $GITHUB_ENV"
+        run: "grep '\"version\"' manifest.json | sed 's/^.*: \"/EXT_VERSION=/; s/\",\\s*$//' >> $GITHUB_ENV"
       - name: check if version matches
         run: "echo \"Release Name: ${{ env.RELEASE_VERSION }}\"; echo \"Extension Version v${{ env.EXT_VERSION }}\";[[ \"${{ env.RELEASE_VERSION }}\" == \"v${{ env.EXT_VERSION }}\" ]]"
       # build
