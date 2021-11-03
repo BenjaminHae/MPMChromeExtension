@@ -107,14 +107,14 @@ class DummyMethods {
 }
 
 //Logged out on startup
-chrome.browserAction.setIcon({ path: "assets/iconLoggedOut.png" });
+chrome.action.setIcon({ path: "assets/iconLoggedOut.png" });
 
 let settings = new Settings();
 let backend = new BackendGateway("");
 backend.authenticationObservable
   .subscribe((authenticated: boolean) => {
       let icon = authenticated ? "assets/iconLoggedIn.png" : "assets/iconLoggedOut.png";
-      chrome.browserAction.setIcon({ path: icon });
+      chrome.action.setIcon({ path: icon });
     });
 let accountManager = new AccountManager(backend);
 let dummyMethods = new DummyMethods(backend, accountManager, settings)
