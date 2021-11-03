@@ -1,8 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Modern Password Manager",
-  "version": "0.6.1",
-  "permissions": ["tabs", "activeTab", "storage"],
+  "version": "0.6.2",
   "browser_action": {
     "default_popup": "popup/index.html",
     "default_icon": "assets/iconLoggedOut.png",
@@ -21,6 +20,7 @@
     "persistent": true
   },
   "permissions": [
+    "tabs",
     "activeTab", 
     "*://*/*", 
     "contextMenus", 
