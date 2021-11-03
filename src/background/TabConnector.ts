@@ -91,6 +91,9 @@ class TabConnector {
         const input = document.activeElement as HTMLInputElement;
         input.value = text;
         input.dispatchEvent(new Event('change'));
+        const evt = document.createEvent("HTMLEvents");
+        evt.initEvent("input", false, true);
+        input.dispatchEvent(evt);
         }, text, frameId);
   }
   async insertTextIntoAdjacentPassword(text: string, frameId: number = 0) {
@@ -100,6 +103,9 @@ class TabConnector {
         const input = form.querySelectorAll("input[type=password]")[0] as HTMLInputElement;
         input.value = text;
         input.dispatchEvent(new Event('change'));
+        const evt = document.createEvent("HTMLEvents");
+        evt.initEvent("input", false, true);
+        input.dispatchEvent(evt);
         }, text, frameId);
     return new Promise(resolve => setTimeout(resolve, 250));
   }
