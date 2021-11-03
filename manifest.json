@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Modern Password Manager",
-  "version": "0.7.0-alpha1",
+  "version": "0.7.0",
   "action": {
     "default_popup": "popup/index.html",
     "default_icon": "assets/iconLoggedOut.png",
@@ -16,8 +16,7 @@
     }
   ],
   "background": {
-    "scripts": ["background.js"],
-    "persistent": true
+    "service_worker": "background.js"
   },
   "permissions": [
     "activeTab", 
@@ -29,12 +28,12 @@
   ],
   "options_ui": {
     "page": "options/index.html", 
-    "chrome_style": true
+    "browser_style": true
   },
   "web_accessible_resources": [
     {
         "resources": [ "webaccessible/*", "assets/*" ],
-        "matches": [ "*" ]
+        "use_dynamic_url": true
     }
   ],
   "content_security_policy": {
