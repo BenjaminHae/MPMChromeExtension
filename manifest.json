@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Modern Password Manager",
-  "version": "0.6.3",
+  "version": "0.7.0-alpha1",
   "action": {
     "default_popup": "popup/index.html",
     "default_icon": "assets/iconLoggedOut.png",
